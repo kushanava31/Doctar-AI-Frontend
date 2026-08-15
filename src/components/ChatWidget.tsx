@@ -34,7 +34,7 @@ export default function ChatWidget() {
 
       {/* Chat popup */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 h-[520px] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col">
+        <div className="fixed bottom-24 right-6 left-6 sm:left-auto z-50 w-auto sm:w-96 h-[min(520px,calc(100dvh-7rem))] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 flex flex-col">
           <div className="bg-doctar-700 text-white px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
