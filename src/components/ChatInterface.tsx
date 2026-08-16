@@ -35,6 +35,7 @@ interface Doctor {
   experience_years: number;
   available_today: boolean;
   languages: string;
+  phone: string | null;
 }
 
 interface Hospital {
@@ -106,9 +107,21 @@ function DoctorCard({ d }: { d: Doctor }) {
           {d.available_today ? "Available Today" : "By Appointment"}
         </span>
       </div>
-      <button className="mt-2 w-full bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium py-1.5 rounded-lg transition-colors">
-        Book Appointment
-      </button>
+      {d.phone ? (
+        <a
+          href={`tel:${d.phone}`}
+          className="mt-2 flex items-center justify-center gap-1.5 w-full bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium py-1.5 rounded-lg transition-colors"
+        >
+          📞 Call Now
+        </a>
+      ) : (
+        <span
+          className="mt-2 flex items-center justify-center gap-1.5 w-full bg-gray-100 text-gray-400 text-sm font-medium py-1.5 rounded-lg cursor-not-allowed"
+          title="No phone number on file for this doctor"
+        >
+          📞 Phone not listed
+        </span>
+      )}
     </div>
   );
 }
