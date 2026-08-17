@@ -88,7 +88,14 @@ interface Message {
   resolvedCitySource?: "gps" | "ip" | "manual" | null; // provenance of resolvedCity
 }
 
+/** Dialled when a doctor record has no direct number on file, so "Call Now"
+ * is always actionable rather than degrading to a dead disabled state. */
+const CUSTOMER_CARE_PHONE = "8585858586";
+
 function DoctorCard({ d }: { d: Doctor }) {
+  // `||` (not `??`) on purpose: the field is `string | null` but empty-string
+  // rows exist in the data too, and both should fall back to customer care.
+  const dialNumber = d.phone || CUSTOMER_CARE_PHONE;
   return (
     <div className="bg-surface-gloss border border-outline-variant/30 rounded-2xl p-4 mt-2 shadow-soft-surface">
       <div className="flex items-start justify-between gap-2">
@@ -110,21 +117,12 @@ function DoctorCard({ d }: { d: Doctor }) {
           {d.available_today ? "Available Today" : "By Appointment"}
         </span>
       </div>
-      {d.phone ? (
-        <a
-          href={`tel:${d.phone}`}
-          className="mt-3 flex items-center justify-center gap-1.5 w-full bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold py-2 rounded-full"
-        >
-          <Icon name="call" filled className="text-[16px]" /> Call Now
-        </a>
-      ) : (
-        <span
-          className="mt-3 flex items-center justify-center gap-1.5 w-full bg-surface-container-high text-outline font-label-md text-label-md font-semibold py-2 rounded-full cursor-not-allowed"
-          title="No phone number on file for this doctor"
-        >
-          <Icon name="call" className="text-[16px]" /> Phone not listed
-        </span>
-      )}
+      <a
+        href={`tel:${dialNumber}`}
+        className="mt-3 flex items-center justify-center gap-1.5 w-full bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold py-2 rounded-full"
+      >
+        <Icon name="call" filled className="text-[16px]" /> Call Now
+      </a>
     </div>
   );
 }
