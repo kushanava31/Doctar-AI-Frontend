@@ -4,74 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { SessionSummary } from "@/lib/chatSessions";
 import { useAuth } from "@/contexts/AuthContext";
-
-// ── Icons — hand-drawn inline SVGs, matching how every other icon in this
-// app is done (ChatInterface.tsx uses no icon library anywhere). ──────────
-function MessageSquareIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-    </svg>
-  );
-}
-
-function HistoryIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3v5h5" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 7v5l3 3" />
-    </svg>
-  );
-}
-
-function ChevronIcon({ className, open }: { className?: string; open: boolean }) {
-  return (
-    <svg
-      className={`${className} transition-transform ${open ? "rotate-180" : ""}`}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-    </svg>
-  );
-}
-
-function DotsIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <circle cx="12" cy="5" r="1.6" />
-      <circle cx="12" cy="12" r="1.6" />
-      <circle cx="12" cy="19" r="1.6" />
-    </svg>
-  );
-}
-
-function PencilIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-    </svg>
-  );
-}
-
-function TrashIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" />
-    </svg>
-  );
-}
-
-function PlusIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 5v14M5 12h14" />
-    </svg>
-  );
-}
+import Icon from "@/components/Icon";
 
 /** No date library in this project — a small hand-rolled formatter matches
  * the codebase's existing preference for that over adding a dependency. */
@@ -117,20 +50,18 @@ export default function ChatSidebar({
   mobileOpen,
   onMobileClose,
 }: ChatSidebarProps) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  // Chat/History nav and the Recents section's own chevron drive the SAME
-  // toggle — the "simpler to wire" option the visual spec explicitly offered,
-  // since there's only ever one conversation pane to show either way.
-  const [sidebarView, setSidebarView] = useState<"chat" | "history">("history");
+  // Recents' own chevron drives its expand/collapse — the "Consultations" nav
+  // item below is now a static current-section indicator (matching the
+  // redesign reference), not a second control over the same state.
+  const [recentsExpanded, setRecentsExpanded] = useState(true);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const renameInputRef = useRef<HTMLInputElement>(null);
-
-  const recentsExpanded = sidebarView === "history";
 
   useEffect(() => {
     if (renamingId) renameInputRef.current?.focus();
@@ -191,212 +122,215 @@ export default function ChatSidebar({
           child, always visible — md:translate-x-0 cancels the transform
           regardless of mobileOpen, and md:static takes it out of the
           fixed-overlay stacking context entirely. */}
-      <div
-        className={`fixed inset-y-0 left-0 z-40 w-72 h-full flex flex-col bg-white border-r border-gray-100 transform transition-transform duration-200 ease-in-out ${
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-72 h-full flex flex-col bg-surface-container-lowest shadow-xl rounded-br-3xl border-r border-outline-variant/30 py-6 transform transition-transform duration-200 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:static md:z-auto md:translate-x-0 md:shrink-0`}
       >
         {/* Mobile-only close row — desktop has no drawer to close. */}
-        <div className="flex justify-end p-2 pb-0 md:hidden">
+        <div className="flex justify-end px-4 -mt-2 mb-2 md:hidden">
           <button
             onClick={onMobileClose}
             aria-label="Close sidebar"
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <Icon name="close" className="text-[20px]" />
           </button>
         </div>
 
-        {/* New Consultation */}
-        <div className="p-3 shrink-0">
+        {/* Logo + brand */}
+        <div className="px-6 mb-8 flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/doctar-logo.svg"
+            alt="DOCTAR AI"
+            draggable={false}
+            className="w-10 h-10 rounded-full object-contain shadow-soft-surface select-none"
+          />
+          <div>
+            <h1 className="font-title-md text-title-md font-bold text-primary">DOCTAR AI</h1>
+            <p className="font-caption-sm text-caption-sm text-on-surface-variant">Your Health Companion</p>
+          </div>
+        </div>
+
+        {/* Start New Session */}
+        <div className="px-4 mb-6">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 bg-doctar-600 hover:bg-doctar-700 text-white font-bold text-sm py-2.5 rounded-full transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold rounded-full"
           >
-            <PlusIcon className="w-4 h-4" />
-            New Consultation
+            <Icon name="add" className="text-[20px]" />
+            Start New Session
           </button>
         </div>
 
-        {/* Nav */}
-        <div className="px-3 pb-2 shrink-0 space-y-1">
-          <button
-            onClick={() => setSidebarView("chat")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-              sidebarView === "chat" ? "bg-doctar-50 text-doctar-700" : "text-gray-500 hover:bg-gray-50"
-            }`}
-          >
-            {/* w-5 h-5, matching the icon-sizing convention used elsewhere in
-                the app (e.g. the header's location-pin icon in
-                ChatInterface.tsx) — NOT w-4.5, which isn't a real Tailwind
-                spacing value. Tailwind silently generates no CSS for an
-                invalid utility class rather than erroring, so this rendered
-                as a completely unconstrained, container-filling SVG. */}
-            <MessageSquareIcon className="w-5 h-5 shrink-0" />
-            Chat
-          </button>
-          <button
-            onClick={() => setSidebarView("history")}
-            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-              sidebarView === "history" ? "bg-doctar-50 text-doctar-700" : "text-gray-500 hover:bg-gray-50"
-            }`}
-          >
-            <HistoryIcon className="w-5 h-5 shrink-0" />
-            History
-          </button>
-        </div>
+        <nav className="flex-1 overflow-y-auto px-2 space-y-1 min-h-0">
+          <div className="px-4 py-2 mt-4 mb-2">
+            <p className="font-caption-sm text-caption-sm text-outline font-semibold uppercase tracking-wider">Navigation</p>
+          </div>
+          {/* Static current-section indicator — this app has one consultation
+              view, so unlike the reference this isn't a link elsewhere. */}
+          <div className="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-xl mx-2 my-1 font-label-md text-label-md shadow-soft-pressed">
+            <Icon name="medical_services" filled className="text-[20px]" />
+            <span>Consultations</span>
+          </div>
 
-      {/* Recents */}
-      <div className="flex-1 min-h-0 flex flex-col px-3 pb-3">
-        <button
-          onClick={() => setSidebarView((v) => (v === "history" ? "chat" : "history"))}
-          className="w-full flex items-center justify-between px-1 py-2 shrink-0 text-xs font-semibold text-gray-400 uppercase tracking-wide hover:text-gray-600 transition-colors"
-        >
-          Recents
-          <ChevronIcon className="w-3.5 h-3.5" open={recentsExpanded} />
-        </button>
+          <div className="px-4 py-2 mt-8 mb-2 flex justify-between items-center">
+            <p className="font-caption-sm text-caption-sm text-outline font-semibold uppercase tracking-wider">Recents</p>
+            <button
+              onClick={() => setRecentsExpanded((v) => !v)}
+              aria-label={recentsExpanded ? "Collapse recents" : "Expand recents"}
+              className="text-outline hover:text-on-surface transition-colors"
+            >
+              <Icon name={recentsExpanded ? "expand_less" : "expand_more"} className="text-[18px]" />
+            </button>
+          </div>
 
-        {recentsExpanded && (
-          <div className="flex-1 min-h-0 overflow-y-auto -mx-1 px-1 space-y-0.5">
-            {!user ? (
-              <div className="text-center py-8 px-2">
-                <p className="text-xs text-gray-500 mb-2">Sign in to save your chat history.</p>
-                <Link
-                  href="/login"
-                  className="inline-block text-xs font-medium text-doctar-600 hover:underline"
-                >
-                  Sign in →
-                </Link>
-              </div>
-            ) : loading ? (
-              <p className="text-xs text-gray-400 text-center py-6">Loading…</p>
-            ) : error ? (
-              <div className="text-center py-6 px-2">
-                <p className="text-xs text-red-500 mb-2">{error}</p>
-                <button onClick={onRetry} className="text-xs font-medium text-doctar-600 hover:underline">
-                  Retry
-                </button>
-              </div>
-            ) : sessions.length === 0 ? (
-              <p className="text-xs text-gray-400 text-center py-6">No conversations yet.</p>
-            ) : (
-              sessions.map((s) => {
-                const isActive = s.id === currentSessionId;
-                const isRenaming = renamingId === s.id;
-                const isConfirmingDelete = confirmDeleteId === s.id;
-                return (
-                  <div key={s.id} className="relative group">
-                    {isRenaming ? (
-                      <input
-                        ref={renameInputRef}
-                        value={renameValue}
-                        onChange={(e) => setRenameValue(e.target.value)}
-                        onBlur={submitRename}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") submitRename();
-                          if (e.key === "Escape") setRenamingId(null);
-                        }}
-                        className="w-full px-2.5 py-2 text-sm rounded-lg border border-doctar-300 focus:outline-none focus:ring-2 focus:ring-doctar-500"
-                      />
-                    ) : (
-                      <button
-                        onClick={() => handleSelectSession(s.id)}
-                        className={`w-full flex items-center gap-2 pl-2.5 pr-8 py-2 rounded-lg text-left transition-colors ${
-                          isActive ? "bg-doctar-50" : "hover:bg-gray-50"
-                        }`}
-                      >
-                        <MessageSquareIcon
-                          className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-doctar-600" : "text-gray-400"}`}
-                        />
-                        <span
-                          className={`flex-1 min-w-0 truncate text-sm ${
-                            isActive ? "font-semibold text-gray-900" : "text-gray-500"
-                          }`}
-                        >
-                          {s.title}
-                        </span>
-                      </button>
-                    )}
-
-                    {!isRenaming && (
-                      <div className="absolute right-1 top-1/2 -translate-y-1/2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setOpenMenuId(openMenuId === s.id ? null : s.id);
-                            setConfirmDeleteId(null);
+          {recentsExpanded && (
+            <div className="space-y-0.5">
+              {!user ? (
+                <div className="text-center py-8 px-2">
+                  <p className="font-caption-sm text-caption-sm text-on-surface-variant mb-2">Sign in to save your chat history.</p>
+                  <Link
+                    href="/login"
+                    className="inline-block font-caption-sm text-caption-sm font-semibold text-primary hover:underline"
+                  >
+                    Sign in →
+                  </Link>
+                </div>
+              ) : loading ? (
+                <p className="font-caption-sm text-caption-sm text-outline text-center py-6">Loading…</p>
+              ) : error ? (
+                <div className="text-center py-6 px-2">
+                  <p className="font-caption-sm text-caption-sm text-error mb-2">{error}</p>
+                  <button onClick={onRetry} className="font-caption-sm text-caption-sm font-semibold text-primary hover:underline">
+                    Retry
+                  </button>
+                </div>
+              ) : sessions.length === 0 ? (
+                <p className="font-caption-sm text-caption-sm text-outline text-center py-6">No conversations yet.</p>
+              ) : (
+                sessions.map((s) => {
+                  const isActive = s.id === currentSessionId;
+                  const isRenaming = renamingId === s.id;
+                  const isConfirmingDelete = confirmDeleteId === s.id;
+                  return (
+                    <div key={s.id} className="relative group">
+                      {isRenaming ? (
+                        <input
+                          ref={renameInputRef}
+                          value={renameValue}
+                          onChange={(e) => setRenameValue(e.target.value)}
+                          onBlur={submitRename}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") submitRename();
+                            if (e.key === "Escape") setRenamingId(null);
                           }}
-                          className={`w-6 h-6 flex items-center justify-center rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-opacity ${
-                            openMenuId === s.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                          className="w-full px-2.5 py-2 font-label-md text-label-md rounded-xl border border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        />
+                      ) : (
+                        <button
+                          onClick={() => handleSelectSession(s.id)}
+                          className={`w-full flex flex-col px-4 py-2 rounded-xl mx-2 text-left transition-colors ${
+                            isActive ? "bg-secondary-container/40 text-on-surface" : "text-on-surface-variant hover:bg-surface-container-high"
                           }`}
-                          aria-label="Session options"
                         >
-                          <DotsIcon className="w-4 h-4" />
+                          <span className="font-label-md text-label-md truncate">{s.title}</span>
+                          <span className="font-caption-sm text-caption-sm text-outline">{formatRelativeTime(s.updated_at)}</span>
                         </button>
+                      )}
 
-                        {openMenuId === s.id && (
-                          <div
-                            ref={menuRef}
-                            className="absolute right-0 top-full mt-1 w-40 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-10"
+                      {!isRenaming && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuId(openMenuId === s.id ? null : s.id);
+                              setConfirmDeleteId(null);
+                            }}
+                            className={`w-6 h-6 flex items-center justify-center rounded-md text-outline hover:text-on-surface hover:bg-surface-container-high transition-opacity ${
+                              openMenuId === s.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                            }`}
+                            aria-label="Session options"
                           >
-                            {isConfirmingDelete ? (
-                              <div className="px-3 py-2">
-                                <p className="text-xs text-gray-600 mb-2">Delete this chat?</p>
-                                <div className="flex gap-2">
+                            <Icon name="more_vert" className="text-[16px]" />
+                          </button>
+
+                          {openMenuId === s.id && (
+                            <div
+                              ref={menuRef}
+                              className="absolute right-0 top-full mt-1 w-40 bg-surface-gloss rounded-xl shadow-soft-surface border border-outline-variant/30 py-1 z-10"
+                            >
+                              {isConfirmingDelete ? (
+                                <div className="px-3 py-2">
+                                  <p className="font-caption-sm text-caption-sm text-on-surface-variant mb-2">Delete this chat?</p>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => {
+                                        onDeleteSession(s.id);
+                                        setOpenMenuId(null);
+                                        setConfirmDeleteId(null);
+                                      }}
+                                      className="flex-1 font-caption-sm text-caption-sm font-semibold bg-error hover:opacity-90 text-on-error rounded-lg py-1.5"
+                                    >
+                                      Delete
+                                    </button>
+                                    <button
+                                      onClick={() => setConfirmDeleteId(null)}
+                                      className="flex-1 font-caption-sm text-caption-sm font-semibold bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant rounded-lg py-1.5"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <>
                                   <button
-                                    onClick={() => {
-                                      onDeleteSession(s.id);
-                                      setOpenMenuId(null);
-                                      setConfirmDeleteId(null);
-                                    }}
-                                    className="flex-1 text-xs font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg py-1.5"
+                                    onClick={() => startRename(s)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high"
                                   >
+                                    <Icon name="edit" className="text-[16px]" />
+                                    Rename
+                                  </button>
+                                  <button
+                                    onClick={() => setConfirmDeleteId(s.id)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 font-label-md text-label-md text-error hover:bg-error-container/40"
+                                  >
+                                    <Icon name="delete" className="text-[16px]" />
                                     Delete
                                   </button>
-                                  <button
-                                    onClick={() => setConfirmDeleteId(null)}
-                                    className="flex-1 text-xs font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg py-1.5"
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <>
-                                <button
-                                  onClick={() => startRename(s)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                                >
-                                  <PencilIcon className="w-3.5 h-3.5" />
-                                  Rename
-                                </button>
-                                <button
-                                  onClick={() => setConfirmDeleteId(s.id)}
-                                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                                >
-                                  <TrashIcon className="w-3.5 h-3.5" />
-                                  Delete
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                                </>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </nav>
 
-                    {!isRenaming && (
-                      <p className="pl-8 -mt-0.5 text-[11px] text-gray-400">{formatRelativeTime(s.updated_at)}</p>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+        <div className="px-2 mt-auto pt-4 border-t border-outline-variant/20 shrink-0">
+          <a
+            href="#"
+            onClick={(e) => e.preventDefault()}
+            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-2 my-1 transition-colors font-label-md text-label-md"
+          >
+            <Icon name="help" className="text-[20px]" />
+            <span>Help Center</span>
+          </a>
+          <button
+            onClick={() => logout()}
+            className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-2 my-1 transition-colors font-label-md text-label-md"
+          >
+            <Icon name="logout" className="text-[20px]" />
+            <span>Log Out</span>
+          </button>
+        </div>
+      </aside>
     </>
   );
 }

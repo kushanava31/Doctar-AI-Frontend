@@ -3,12 +3,10 @@
 @tailwind utilities;
 
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  @apply text-slate-900 antialiased;
+  font-family: var(--font-hanken-grotesk), system-ui, sans-serif;
+  @apply text-on-surface antialiased bg-background;
   min-height: 100vh;
   min-height: 100dvh;
-  background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 30%, #e0f2fe 70%, #f0fdf4 100%);
-  background-attachment: fixed;
 }
 
 /**
@@ -26,4 +24,91 @@ body {
 .app-viewport {
   height: 100vh;
   height: 100dvh;
+}
+
+/* ── Redesign: surface effects ported from the DOCTAR AI chat mockups ── */
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ai-pulse-bg {
+  background: radial-gradient(circle at center, rgba(66, 133, 244, 0.08) 0%, rgba(155, 114, 203, 0.03) 50%, transparent 70%);
+}
+
+.skeuo-surface {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(0, 0, 0, 0.02);
+  background: linear-gradient(145deg, #ffffff, #fcfcfc);
+}
+
+.skeuo-input {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 -1px 2px rgba(255, 255, 255, 0.5);
+  background-color: theme("colors.surface-container-low");
+}
+
+.skeuo-button-primary {
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skeuo-button-secondary {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e0e2e7;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c3c6d6;
+}
+
+/**
+ * Material Symbols Outlined — Google's official recommended base rule.
+ * `font-variation-settings` on each `<span>` (via the Icon component) sets
+ * FILL/wght/GRAD/opsz per icon; each instance's own font-size (Tailwind
+ * text-* utility or inline style) sets its size as normal.
+ *
+ * Fallback: MaterialIconsLoader adds `.fonts-loaded` to <html> only once the
+ * font family has actually loaded (not just "settled", which `fonts.ready`
+ * would report even on failure). Until then this `!important` rule — scoped
+ * by the ancestor selector so it always outranks a plain size utility class —
+ * collapses every icon to zero size, so a blocked/failed font never shows its
+ * literal fallback text (e.g. "search") instead of a glyph.
+ */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+html:not(.fonts-loaded) .material-symbols-outlined {
+  font-size: 0 !important;
 }

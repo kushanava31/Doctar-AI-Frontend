@@ -9,6 +9,7 @@ import {
 } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import ChatSidebar from "@/components/ChatSidebar";
+import Icon from "@/components/Icon";
 import {
   deleteSession as apiDeleteSession,
   getSession as apiGetSession,
@@ -89,37 +90,39 @@ interface Message {
 
 function DoctorCard({ d }: { d: Doctor }) {
   return (
-    <div className="bg-white border border-doctar-100 rounded-xl p-3 mt-2 shadow-sm">
+    <div className="bg-surface-gloss border border-outline-variant/30 rounded-2xl p-4 mt-2 shadow-soft-surface">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="font-semibold text-gray-800">{d.name.startsWith("Dr.") ? d.name : `Dr. ${d.name}`}</p>
-          <p className="text-sm text-doctar-700">{d.speciality}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{d.hospital}, {d.city}</p>
+          <p className="font-label-md text-label-md font-semibold text-on-surface">{d.name.startsWith("Dr.") ? d.name : `Dr. ${d.name}`}</p>
+          <p className="font-caption-sm text-caption-sm text-primary font-semibold mt-0.5">{d.speciality}</p>
+          <p className="font-caption-sm text-caption-sm text-on-surface-variant mt-0.5">{d.hospital}, {d.city}</p>
         </div>
         <div className="text-right shrink-0">
-          <p className="font-bold text-doctar-700">₹{d.fee}</p>
-          <p className="text-xs text-yellow-600">⭐ {d.rating}/5</p>
+          <p className="font-label-md text-label-md font-bold text-primary">₹{d.fee}</p>
+          <p className="font-caption-sm text-caption-sm text-amber-600 flex items-center gap-0.5 justify-end mt-0.5">
+            <Icon name="star" filled className="text-[13px]" />{d.rating}/5
+          </p>
         </div>
       </div>
-      <div className="flex items-center justify-between mt-2">
-        <span className="text-xs text-gray-500">{d.experience_years} yrs · {d.languages}</span>
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${d.available_today ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+      <div className="flex items-center justify-between mt-3">
+        <span className="font-caption-sm text-caption-sm text-on-surface-variant">{d.experience_years} yrs · {d.languages}</span>
+        <span className={`font-caption-sm text-caption-sm px-2 py-0.5 rounded-full font-medium ${d.available_today ? "bg-emerald-100 text-emerald-700" : "bg-surface-container-high text-outline"}`}>
           {d.available_today ? "Available Today" : "By Appointment"}
         </span>
       </div>
       {d.phone ? (
         <a
           href={`tel:${d.phone}`}
-          className="mt-2 flex items-center justify-center gap-1.5 w-full bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium py-1.5 rounded-lg transition-colors"
+          className="mt-3 flex items-center justify-center gap-1.5 w-full bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold py-2 rounded-full"
         >
-          📞 Call Now
+          <Icon name="call" filled className="text-[16px]" /> Call Now
         </a>
       ) : (
         <span
-          className="mt-2 flex items-center justify-center gap-1.5 w-full bg-gray-100 text-gray-400 text-sm font-medium py-1.5 rounded-lg cursor-not-allowed"
+          className="mt-3 flex items-center justify-center gap-1.5 w-full bg-surface-container-high text-outline font-label-md text-label-md font-semibold py-2 rounded-full cursor-not-allowed"
           title="No phone number on file for this doctor"
         >
-          📞 Phone not listed
+          <Icon name="call" className="text-[16px]" /> Phone not listed
         </span>
       )}
     </div>
@@ -128,43 +131,52 @@ function DoctorCard({ d }: { d: Doctor }) {
 
 function HospitalCard({ h }: { h: Hospital }) {
   return (
-    <div className="bg-white border border-doctar-100 rounded-xl p-3 mt-2 shadow-sm">
+    <div className="bg-surface-gloss border border-outline-variant/30 rounded-2xl p-4 mt-2 shadow-soft-surface">
       <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="font-semibold text-gray-800 truncate">🏥 {h.name}</p>
-          <p className="text-sm text-doctar-700">{h.type}</p>
-          <p className="text-xs text-gray-500 mt-0.5 truncate">📍 {h.address}</p>
+        <div className="min-w-0 flex items-start gap-2">
+          <Icon name="local_hospital" filled className="text-[18px] text-tertiary shrink-0 mt-0.5" />
+          <div className="min-w-0">
+            <p className="font-label-md text-label-md font-semibold text-on-surface truncate">{h.name}</p>
+            <p className="font-caption-sm text-caption-sm text-primary font-semibold mt-0.5">{h.type}</p>
+            <p className="font-caption-sm text-caption-sm text-on-surface-variant mt-0.5 truncate flex items-center gap-1">
+              <Icon name="location_on" className="text-[13px] shrink-0" />{h.address}
+            </p>
+          </div>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-xs text-yellow-600 font-medium">⭐ {h.rating}/5</p>
-          {h.beds && <p className="text-xs text-gray-400">{h.beds} beds</p>}
+          <p className="font-caption-sm text-caption-sm text-amber-600 font-medium flex items-center gap-0.5 justify-end">
+            <Icon name="star" filled className="text-[13px]" />{h.rating}/5
+          </p>
+          {h.beds && <p className="font-caption-sm text-caption-sm text-outline mt-0.5">{h.beds} beds</p>}
         </div>
       </div>
-      <div className="flex items-center justify-between mt-2 gap-2">
-        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-          h.emergency ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"
+      <div className="flex items-center justify-between mt-3 gap-2">
+        <span className={`font-caption-sm text-caption-sm px-2 py-0.5 rounded-full font-medium ${
+          h.emergency ? "bg-error-container text-on-error-container" : "bg-surface-container-high text-outline"
         }`}>
-          {h.emergency ? "🚨 Emergency" : "No Emergency"}
+          {h.emergency ? "Emergency" : "No Emergency"}
         </span>
         {h.phone && (
-          <span className="text-xs text-gray-500 truncate">📞 {h.phone}</span>
+          <span className="font-caption-sm text-caption-sm text-on-surface-variant truncate flex items-center gap-1">
+            <Icon name="call" className="text-[13px]" />{h.phone}
+          </span>
         )}
       </div>
-      <div className="mt-2 flex gap-2">
+      <div className="mt-3 flex gap-2">
         <button
           onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(h.name + " " + h.city)}`, "_blank")}
-          className="flex-1 bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium py-1.5 rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold py-2 rounded-full"
         >
-          🗺️ Get Directions
+          <Icon name="directions" filled className="text-[16px]" /> Get Directions
         </button>
         {/* A real <a href="tel:"> rather than window.location — mobile browsers
             handle the former reliably, and it keeps the control usable via
             long-press / "copy number" on desktop where there's no dialer. */}
         <a
           href="tel:108"
-          className="flex-1 flex items-center justify-center bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-1.5 rounded-lg transition-colors"
+          className="flex-1 flex items-center justify-center gap-1.5 bg-error hover:opacity-90 text-on-error font-label-md text-label-md font-semibold py-2 rounded-full transition-opacity"
         >
-          📞 Call Ambulance
+          <Icon name="emergency" filled className="text-[16px]" /> Call Ambulance
         </a>
       </div>
     </div>
@@ -180,20 +192,24 @@ function MedicineCard({ med, idx }: { med: MedicineItem; idx: number }) {
       : med.food_instructions || "—";
 
   return (
-    <div className="bg-white border border-doctar-100 rounded-xl p-3 shadow-sm">
+    <div className="bg-surface-gloss border border-outline-variant/30 rounded-2xl p-3 shadow-soft-surface">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="font-semibold text-gray-800 text-sm">{idx}. {med.name}</p>
-          <p className="text-xs text-doctar-700 mt-0.5">{med.dosage}</p>
+          <p className="font-label-md text-label-md font-semibold text-on-surface">{idx}. {med.name}</p>
+          <p className="font-caption-sm text-caption-sm text-primary mt-0.5">{med.dosage}</p>
         </div>
-        <span className="text-xs bg-doctar-50 text-doctar-700 border border-doctar-200 rounded-full px-2 py-0.5 shrink-0">
+        <span className="font-caption-sm text-caption-sm bg-surface-container-low text-primary border border-outline-variant/40 rounded-full px-2 py-0.5 shrink-0">
           {med.duration}
         </span>
       </div>
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
-        <span>🕐 {med.timing}</span>
-        <span>🍽️ {foodLabel}</span>
-        {med.purpose && <span className="text-doctar-700 font-medium w-full">💊 {med.purpose}</span>}
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-caption-sm text-caption-sm text-on-surface-variant">
+        <span className="flex items-center gap-1"><Icon name="schedule" className="text-[13px]" />{med.timing}</span>
+        <span className="flex items-center gap-1"><Icon name="restaurant" className="text-[13px]" />{foodLabel}</span>
+        {med.purpose && (
+          <span className="text-primary font-semibold w-full flex items-center gap-1">
+            <Icon name="medication" filled className="text-[13px]" />{med.purpose}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -210,7 +226,7 @@ function PrescriptionMessage({ result }: { result: PrescriptionResult }) {
 
   return (
     <div className="mt-2 space-y-2">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+      <p className="font-caption-sm text-caption-sm font-semibold text-outline uppercase tracking-wide">
         {result.medicines.length} medicine{result.medicines.length !== 1 ? "s" : ""} found
       </p>
       {result.medicines.map((m, i) => (
@@ -219,20 +235,20 @@ function PrescriptionMessage({ result }: { result: PrescriptionResult }) {
 
       {/* Language picker */}
       {!chosen ? (
-        <div className="mt-3 bg-doctar-50 border border-doctar-200 rounded-xl p-3">
-          <p className="text-sm font-medium text-doctar-800 mb-2">
-            📥 Which language do you want the PDF in?
+        <div className="mt-3 bg-surface-container-low border border-outline-variant/30 rounded-2xl p-3">
+          <p className="font-label-md text-label-md font-semibold text-on-surface mb-2 flex items-center gap-1.5">
+            <Icon name="download" className="text-[16px]" /> Which language do you want the PDF in?
           </p>
           <div className="grid grid-cols-3 gap-2">
             {LANG_OPTIONS.map((opt) => (
               <button
                 key={opt.lang}
                 onClick={() => setChosen(opt.lang)}
-                className="flex flex-col items-center gap-1 bg-white hover:bg-doctar-600 hover:text-white border border-doctar-200 hover:border-doctar-600 rounded-xl py-2.5 px-2 transition-all group"
+                className="flex flex-col items-center gap-1 bg-surface-gloss hover:bg-gradient-to-br hover:from-ai-gradient-start hover:to-ai-gradient-end hover:text-white border border-outline-variant/40 hover:border-transparent rounded-xl py-2.5 px-2 transition-all group shadow-soft-surface"
               >
                 <span className="text-xl">{opt.emoji}</span>
-                <span className="text-xs font-semibold">{opt.label}</span>
-                <span className="text-[10px] text-gray-400 group-hover:text-doctar-100">{opt.sublabel}</span>
+                <span className="font-caption-sm text-caption-sm font-semibold">{opt.label}</span>
+                <span className="text-[10px] text-outline group-hover:text-white/80">{opt.sublabel}</span>
               </button>
             ))}
           </div>
@@ -242,16 +258,14 @@ function PrescriptionMessage({ result }: { result: PrescriptionResult }) {
           <a
             href={pdfDownloadUrl(result.id, chosen)}
             download
-            className="flex items-center justify-center gap-2 w-full bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium py-2.5 rounded-xl transition-colors"
+            className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold py-2.5 rounded-full"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
+            <Icon name="download" filled className="text-[18px]" />
             Download PDF — {LANG_OPTIONS.find(o => o.lang === chosen)?.sublabel}
           </a>
           <button
             onClick={() => setChosen(null)}
-            className="w-full text-xs text-doctar-600 hover:text-doctar-800 py-1 transition-colors"
+            className="w-full font-caption-sm text-caption-sm text-primary hover:underline py-1 transition-colors"
           >
             ← Change language
           </button>
@@ -264,40 +278,44 @@ function PrescriptionMessage({ result }: { result: PrescriptionResult }) {
 function MedicineLabelCard({ label }: { label: MedicineLabel }) {
   if (label.error) {
     return (
-      <div className="mt-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-        ❌ {label.error}
+      <div className="mt-2 rounded-2xl border border-error-container bg-error-container/40 p-3 font-body-md text-body-md text-on-error-container flex items-center gap-2">
+        <Icon name="error" filled className="text-[18px] shrink-0" /> {label.error}
       </div>
     );
   }
 
   return (
-    <div className="mt-2 rounded-xl border border-doctar-100 bg-white shadow-sm overflow-hidden">
+    <div className="mt-2 rounded-2xl border border-outline-variant/30 bg-surface-gloss shadow-soft-surface overflow-hidden">
       {/* Header */}
-      <div className="bg-doctar-600 text-white px-4 py-3">
+      <div className="bg-tertiary text-white px-4 py-3">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="font-bold text-base leading-tight">{label.name || "Unknown Medicine"}</p>
+            <p className="font-title-md text-title-md leading-tight">{label.name || "Unknown Medicine"}</p>
             {label.generic_name && (
-              <p className="text-doctar-100 text-xs mt-0.5">{label.generic_name}</p>
+              <p className="text-white/80 font-caption-sm text-caption-sm mt-0.5">{label.generic_name}</p>
             )}
           </div>
           {label.prescription_required && (
-            <span className="shrink-0 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Rx</span>
+            <span className="shrink-0 bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Rx</span>
           )}
         </div>
         {label.manufacturer && (
-          <p className="text-doctar-200 text-xs mt-1">🏭 {label.manufacturer}</p>
+          <p className="text-white/70 font-caption-sm text-caption-sm mt-1 flex items-center gap-1">
+            <Icon name="factory" className="text-[13px]" />{label.manufacturer}
+          </p>
         )}
       </div>
 
-      <div className="p-3 space-y-3 text-sm">
+      <div className="p-3 space-y-3 font-body-md text-body-md">
         {/* Uses */}
         {label.uses && label.uses.length > 0 && (
           <div>
-            <p className="font-semibold text-gray-700 text-xs uppercase tracking-wide mb-1">✅ Uses</p>
+            <p className="font-semibold text-on-surface-variant font-caption-sm text-caption-sm uppercase tracking-wide mb-1 flex items-center gap-1">
+              <Icon name="check_circle" filled className="text-[14px] text-emerald-600" /> Uses
+            </p>
             <ul className="space-y-0.5">
               {label.uses.map((u, i) => (
-                <li key={i} className="text-gray-700 flex gap-1.5"><span className="text-doctar-500 shrink-0">•</span>{u}</li>
+                <li key={i} className="text-on-surface-variant flex gap-1.5"><span className="text-primary shrink-0">•</span>{u}</li>
               ))}
             </ul>
           </div>
@@ -306,18 +324,22 @@ function MedicineLabelCard({ label }: { label: MedicineLabel }) {
         {/* Dosage */}
         {label.dosage && (
           <div>
-            <p className="font-semibold text-gray-700 text-xs uppercase tracking-wide mb-1">💊 Dosage</p>
-            <p className="text-gray-700">{label.dosage}</p>
+            <p className="font-semibold text-on-surface-variant font-caption-sm text-caption-sm uppercase tracking-wide mb-1 flex items-center gap-1">
+              <Icon name="medication" filled className="text-[14px] text-primary" /> Dosage
+            </p>
+            <p className="text-on-surface-variant">{label.dosage}</p>
           </div>
         )}
 
         {/* Side effects */}
         {label.side_effects && label.side_effects.length > 0 && (
           <div>
-            <p className="font-semibold text-gray-700 text-xs uppercase tracking-wide mb-1">⚠️ Side Effects</p>
+            <p className="font-semibold text-on-surface-variant font-caption-sm text-caption-sm uppercase tracking-wide mb-1 flex items-center gap-1">
+              <Icon name="warning" filled className="text-[14px] text-amber-600" /> Side Effects
+            </p>
             <ul className="space-y-0.5">
               {label.side_effects.map((s, i) => (
-                <li key={i} className="text-gray-600 flex gap-1.5"><span className="text-orange-400 shrink-0">•</span>{s}</li>
+                <li key={i} className="text-on-surface-variant flex gap-1.5"><span className="text-amber-500 shrink-0">•</span>{s}</li>
               ))}
             </ul>
           </div>
@@ -325,26 +347,137 @@ function MedicineLabelCard({ label }: { label: MedicineLabel }) {
 
         {/* Warnings */}
         {label.warnings && label.warnings.length > 0 && (
-          <div className="bg-orange-50 border border-orange-100 rounded-lg p-2">
-            <p className="font-semibold text-orange-700 text-xs uppercase tracking-wide mb-1">🚫 Warnings</p>
+          <div className="bg-error-container/30 border border-error-container rounded-lg p-2">
+            <p className="font-semibold text-on-error-container font-caption-sm text-caption-sm uppercase tracking-wide mb-1 flex items-center gap-1">
+              <Icon name="block" filled className="text-[14px]" /> Warnings
+            </p>
             <ul className="space-y-0.5">
               {label.warnings.map((w, i) => (
-                <li key={i} className="text-orange-700 text-xs flex gap-1.5"><span className="shrink-0">•</span>{w}</li>
+                <li key={i} className="text-on-error-container font-caption-sm text-caption-sm flex gap-1.5"><span className="shrink-0">•</span>{w}</li>
               ))}
             </ul>
           </div>
         )}
 
         {/* Storage & Expiry */}
-        <div className="flex flex-wrap gap-3 text-xs text-gray-500 border-t border-gray-100 pt-2">
-          {label.storage && <span>🌡️ {label.storage}</span>}
-          {label.expiry && <span>📅 Exp: {label.expiry}</span>}
+        <div className="flex flex-wrap gap-3 font-caption-sm text-caption-sm text-outline border-t border-outline-variant/30 pt-2">
+          {label.storage && <span className="flex items-center gap-1"><Icon name="thermostat" className="text-[13px]" />{label.storage}</span>}
+          {label.expiry && <span className="flex items-center gap-1"><Icon name="event" className="text-[13px]" />Exp: {label.expiry}</span>}
           {label.source !== "ai" && (
-            <span className="text-gray-400 italic">OCR-based — verify with pharmacist</span>
+            <span className="text-outline italic">OCR-based — verify with pharmacist</span>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+const WELCOME_FEATURES = [
+  { icon: "search", label: "Find doctors", detail: "by speciality, city, or budget", bubble: "bg-blue-100 text-primary-container" },
+  { icon: "description", label: "Upload a prescription", detail: "to get your medicine schedule", bubble: "bg-purple-100 text-tertiary-container" },
+  { icon: "center_focus_strong", label: "Scan a medicine label", detail: "to identify any medicine", bubble: "bg-green-100 text-emerald-700" },
+] as const;
+
+/** The very first assistant message — a richly-structured intro card in both
+ * mockups, distinct from every later message's plain markdown bubble. */
+function WelcomeCard({ compact }: { compact: boolean }) {
+  if (compact) {
+    return (
+      <div className="bg-surface-gloss rounded-2xl p-5 shadow-soft-surface border border-white/50">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-ai-gradient-start to-ai-gradient-end flex-shrink-0 flex items-center justify-center shadow-md">
+            <Icon name="smart_toy" filled className="text-white text-[18px]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-label-md text-label-md text-on-surface font-semibold">Hello! I&apos;m DOCTAR AI — your health assistant.</p>
+            <div className="flex flex-col gap-2 mt-3">
+              {WELCOME_FEATURES.map((f) => (
+                <div key={f.label} className="bg-surface-container-low rounded-xl p-2.5 border border-outline-variant/20 flex items-center gap-2.5">
+                  <div className={`w-7 h-7 rounded-full ${f.bubble} flex items-center justify-center shrink-0`}>
+                    <Icon name={f.icon} className="text-[14px]" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="font-caption-sm text-caption-sm font-semibold text-on-surface block">{f.label}</span>
+                    <span className="text-[10px] text-outline block truncate">{f.detail}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 p-2.5 rounded-lg bg-surface-dim/50 border border-outline-variant/20">
+              <p className="font-caption-sm text-caption-sm text-on-surface-variant italic">Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Desktop treatment */}
+      <div className="hidden md:block bg-surface-gloss rounded-3xl p-8 shadow-soft-surface border border-white/50 transform transition-all duration-500 hover:shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ai-gradient-start to-ai-gradient-end flex-shrink-0 flex items-center justify-center shadow-md">
+            <Icon name="smart_toy" filled className="text-white text-[20px]" />
+          </div>
+          <div className="flex-1 space-y-6">
+            <p className="font-body-lg text-body-lg text-on-surface font-medium">Hello! I&apos;m DOCTAR AI — your health assistant.</p>
+            <div className="space-y-4">
+              <p className="font-body-md text-body-md text-on-surface-variant">I can help you:</p>
+              <ul className="space-y-4 font-body-md text-body-md text-on-surface">
+                {WELCOME_FEATURES.map((f) => (
+                  <li key={f.label} className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-secondary-container/50 flex items-center justify-center flex-shrink-0 text-primary">
+                      <Icon name={f.icon} className="text-[16px]" />
+                    </div>
+                    <div><strong className="font-semibold text-primary">{f.label}</strong> {f.detail}</div>
+                  </li>
+                ))}
+                <li className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-secondary-container/50 flex items-center justify-center flex-shrink-0 text-primary">
+                    <Icon name="medication" className="text-[16px]" />
+                  </div>
+                  <div><strong className="font-semibold text-primary">Answer questions</strong> about DOCTAR services</div>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-surface-container-low p-4 rounded-xl border border-outline-variant/30 italic text-on-surface-variant font-body-md">
+              Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile treatment */}
+      <div className="md:hidden">
+        <div className="flex items-center justify-center pt-2 pb-4">
+          <div className="w-16 h-16 rounded-full skeuo-surface flex items-center justify-center relative overflow-hidden border-2 border-white">
+            <div className="absolute inset-0 bg-gradient-to-br from-ai-gradient-start/20 to-ai-gradient-end/20" />
+            <Icon name="smart_toy" filled className="text-primary text-[32px] relative z-10" />
+          </div>
+        </div>
+        <div className="skeuo-surface rounded-2xl p-6 border border-white/60">
+          <h2 className="font-title-md text-title-md text-on-surface mb-2">Hello! I&apos;m DOCTAR AI — your health assistant.</h2>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-5">I can help you with your daily wellness needs:</p>
+          <div className="flex flex-col gap-3">
+            {WELCOME_FEATURES.map((f) => (
+              <div key={f.label} className="bg-surface-container-low rounded-xl p-3 shadow-sm border border-outline-variant/20 flex items-center gap-4">
+                <div className={`w-10 h-10 rounded-full ${f.bubble} flex items-center justify-center shrink-0`}>
+                  <Icon name={f.icon} className="text-[18px]" />
+                </div>
+                <div>
+                  <span className="font-label-md text-label-md font-semibold text-on-surface block">{f.label}</span>
+                  <span className="font-caption-sm text-caption-sm text-outline block">{f.detail}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-5 p-3 rounded-lg bg-surface-dim/50 border border-outline-variant/20">
+            <p className="font-caption-sm text-caption-sm text-on-surface-variant italic">Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;</p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -413,6 +546,14 @@ const SUGGESTIONS = [
   "What is DOCTAR?",
 ];
 
+/** Display-only: strips a suggestion's leading emoji (the redesign shows a
+ * Material icon there instead) — `send()` is always called with the
+ * original, unstripped string from SUGGESTIONS, so backend behavior is
+ * completely unchanged. */
+function suggestionLabel(s: string): string {
+  return s.replace(/^\p{Extended_Pictographic}\s*/u, "");
+}
+
 // ── Popular Indian cities shown in the picker ──────────────────────────────
 const POPULAR_CITIES = [
   "Delhi", "Mumbai", "Kolkata", "Bangalore", "Hyderabad", "Chennai",
@@ -445,14 +586,12 @@ function LocationPicker({ onSelect, onDetect, detecting, onClose }: LocationPick
   }
 
   return (
-    <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+    <div className="absolute top-full right-0 mt-2 w-80 bg-surface-gloss rounded-2xl shadow-soft-surface border border-outline-variant/30 z-50 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-        <p className="text-sm font-semibold text-gray-800">Choose your location</p>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-outline-variant/20">
+        <p className="font-label-md text-label-md font-semibold text-on-surface">Choose your location</p>
+        <button onClick={onClose} className="text-outline hover:text-on-surface transition-colors">
+          <Icon name="close" className="text-[18px]" />
         </button>
       </div>
 
@@ -460,15 +599,13 @@ function LocationPicker({ onSelect, onDetect, detecting, onClose }: LocationPick
         {/* Search input */}
         <form onSubmit={handleSubmit}>
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline" />
             <input
               ref={inputRef}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Type your State or City"
-              className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9333ea] focus:border-transparent text-gray-800 placeholder-gray-400"
+              className="w-full pl-9 pr-3 py-2.5 font-body-md text-body-md skeuo-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 text-on-surface placeholder:text-outline-variant"
             />
           </div>
         </form>
@@ -477,34 +614,23 @@ function LocationPicker({ onSelect, onDetect, detecting, onClose }: LocationPick
         <button
           onClick={onDetect}
           disabled={detecting}
-          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors group disabled:opacity-60"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-secondary-container/30 transition-colors group disabled:opacity-60"
         >
-          {detecting ? (
-            <svg className="w-5 h-5 text-blue-600 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-            </svg>
-          ) : (
-            /* GPS crosshair icon */
-            <svg className="w-5 h-5 text-blue-600 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="3" fill="#2563eb" stroke="none"/>
-              <circle cx="12" cy="12" r="7" />
-              <line x1="12" y1="2"  x2="12" y2="5"  />
-              <line x1="12" y1="19" x2="12" y2="22" />
-              <line x1="2"  y1="12" x2="5"  y2="12" />
-              <line x1="19" y1="12" x2="22" y2="12" />
-            </svg>
-          )}
-          <span className="text-sm font-medium text-blue-600">
+          <Icon
+            name={detecting ? "progress_activity" : "my_location"}
+            filled={!detecting}
+            className={`text-[20px] text-primary shrink-0 ${detecting ? "animate-spin" : ""}`}
+          />
+          <span className="font-label-md text-label-md font-medium text-primary">
             {detecting ? "Detecting location…" : "Detect my location"}
           </span>
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-2 px-1">
-          <div className="flex-1 h-px bg-gray-100" />
-          <span className="text-[10px] text-gray-400 uppercase tracking-wide">Popular cities</span>
-          <div className="flex-1 h-px bg-gray-100" />
+          <div className="flex-1 h-px bg-outline-variant/30" />
+          <span className="text-[10px] text-outline uppercase tracking-wide">Popular cities</span>
+          <div className="flex-1 h-px bg-outline-variant/30" />
         </div>
 
         {/* City grid */}
@@ -515,14 +641,14 @@ function LocationPicker({ onSelect, onDetect, detecting, onClose }: LocationPick
                 <button
                   key={city}
                   onClick={() => onSelect(city)}
-                  className="text-xs text-gray-700 bg-gray-50 hover:bg-[#9333ea] hover:text-white border border-gray-200 hover:border-[#9333ea] rounded-xl py-2 px-2 transition-all truncate font-medium"
+                  className="font-caption-sm text-caption-sm text-on-surface-variant bg-surface-container-low hover:bg-gradient-to-br hover:from-ai-gradient-start hover:to-ai-gradient-end hover:text-white border border-outline-variant/30 hover:border-transparent rounded-xl py-2 px-2 transition-all truncate font-medium"
                 >
                   {city}
                 </button>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-gray-400 text-center py-4">No cities found. Press Enter to use &quot;{query}&quot;.</p>
+            <p className="font-caption-sm text-caption-sm text-outline text-center py-4">No cities found. Press Enter to use &quot;{query}&quot;.</p>
           )}
         </div>
       </div>
@@ -1226,9 +1352,12 @@ function extractLocationFromMessage(msg: string): string | null {
   }
 
   const busy = loading || uploading;
+  const isGreeting = (m: Message) => m.role === "assistant" && m.text === GREETING_MESSAGE.text;
+  const locationLabel = locStatus === "loading" || locationResolving ? "Detecting…" : userCity || "Set location";
+  const avatarInitial = user?.name?.trim()?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || null;
 
   return (
-    <div className={compact ? "h-full flex flex-col bg-white/60" : "app-viewport flex bg-transparent"}>
+    <div className={compact ? "h-full flex flex-col bg-white/60" : "app-viewport flex bg-background"}>
       {/* Sidebar — full-page /chat view only, per spec. The compact floating
           widget (384×520px) has no room for a persistent side panel. */}
       {!compact && (
@@ -1246,102 +1375,112 @@ function extractLocationFromMessage(msg: string): string | null {
           onMobileClose={() => setSidebarOpen(false)}
         />
       )}
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className={`flex-1 min-w-0 flex flex-col relative ${compact ? "" : "ai-pulse-bg"}`}>
       {/* Header — shrink-0 so it keeps its size and the message list absorbs
           the flex slack, rather than the header stretching on tall screens. */}
       {!compact && (
-        <div className="shrink-0 bg-doctar-700 text-white px-4 py-2.5 sm:px-6 sm:py-4 shadow">
-          <div className="max-w-2xl mx-auto flex items-center gap-2 sm:gap-3">
-            {/* Sidebar toggle — mobile only. Above md the sidebar is always
-                visible inline (see ChatSidebar's md: classes), so there's
-                nothing for this button to open there. */}
-            <button
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open chat history"
-              className="md:hidden shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            {/* Decorative only — deliberately not a link.
-                `draggable={false}` matters: a bare <img> is natively draggable,
-                so an imprecise click (mousedown, slight move, mouseup) starts an
-                image drag, and dropping it back on the tab navigates the browser
-                to /doctar-logo.svg — a real full page load that wipes the whole
-                conversation and reads as "clicking the logo reloaded the page".
-                `pointer-events-none` makes the element inert to clicks entirely.
-                Linking it home would be pointless anyway: next.config.ts
-                redirects / → /chat, so this page already is home. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/doctar-logo.svg"
-              alt="DOCTAR"
-              draggable={false}
-              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full pointer-events-none select-none shrink-0"
-            />
-            <div className="min-w-0">
-              <h1 className="font-bold text-base sm:text-lg leading-tight truncate">DOCTAR AI Assistant</h1>
-              {/* Hidden on phones: this subtitle wrapped to two lines on a
-                  narrow screen, and that extra height came straight out of the
-                  conversation area. The chips below say the same thing. */}
-              <p className="hidden sm:block text-doctar-200 text-sm">Find doctors · Upload prescription · Health guidance</p>
+        <div className="shrink-0 sticky top-0 z-30 bg-tertiary text-white shadow-md border-b border-white/10 px-4 py-3 md:px-8 md:py-6">
+          <div className="flex justify-between items-center w-full">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
+              {/* Sidebar toggle — mobile only. Above md the sidebar is always
+                  visible inline (see ChatSidebar's md: classes), so there's
+                  nothing for this button to open there. */}
+              <button
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open chat history"
+                className="md:hidden shrink-0 text-white active:scale-95 transition-transform"
+              >
+                <Icon name="menu" className="text-[24px]" />
+              </button>
+              {/* Decorative only — deliberately not a link.
+                  `draggable={false}` matters: a bare <img> is natively draggable,
+                  so an imprecise click (mousedown, slight move, mouseup) starts an
+                  image drag, and dropping it back on the tab navigates the browser
+                  to /doctar-logo.svg — a real full page load that wipes the whole
+                  conversation and reads as "clicking the logo reloaded the page".
+                  `pointer-events-none` makes the element inert to clicks entirely.
+                  Linking it home would be pointless anyway: next.config.ts
+                  redirects / → /chat, so this page already is home. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/doctar-logo.svg"
+                alt="DOCTAR"
+                draggable={false}
+                className="h-8 md:h-12 w-auto object-contain rounded-lg pointer-events-none select-none shrink-0"
+              />
+              {/* Title/subtitle — desktop only; the mobile header stays a bare
+                  logo + hamburger, matching the mobile reference. */}
+              <div className="hidden md:flex flex-col min-w-0">
+                <h2 className="font-headline-lg text-headline-lg font-bold text-white truncate">DOCTAR AI Assistant</h2>
+                <p className="font-body-md text-body-md text-white/80 mt-1">Find doctors · Upload prescription · Health guidance</p>
+              </div>
             </div>
 
-            {/* ── Location selector — top-right of header ── */}
-            <div ref={pickerRef} className="ml-auto flex items-center gap-2 shrink-0 relative">
-              {/* Clickable row: label + button */}
-              <button
-                onClick={() => setShowPicker((v) => !v)}
-                className="flex items-center gap-2 group"
-              >
-                <div className="text-right max-w-[110px] sm:max-w-none">
-                  <p className="hidden sm:block text-[11px] text-doctar-300 leading-none tracking-wide uppercase">
-                    Your location
-                  </p>
-                  <p className="text-[12px] sm:text-[14px] font-medium text-white leading-tight sm:mt-0.5 truncate group-hover:text-doctar-200 transition-colors">
-                    {locStatus === "loading" || locationResolving ? "Detecting…" : userCity || "Set location"}
-                  </p>
-                </div>
+            <div className="flex items-center gap-3 md:gap-6 shrink-0">
+              {/* ── Location selector ── */}
+              <div ref={pickerRef} className="relative">
+                <button
+                  onClick={() => setShowPicker((v) => !v)}
+                  aria-label="Set your location"
+                  className="flex items-center gap-2 group text-white hover:bg-white/10 md:hover:bg-transparent rounded-full p-2 md:p-0 transition-colors"
+                >
+                  {/* Compact mobile pill */}
+                  <span className="md:hidden flex items-center gap-1">
+                    <Icon name="location_on" filled className="text-[20px]" />
+                    <span className="font-label-md text-label-md">{userCity || "Location"}</span>
+                  </span>
 
-                {/* Pin button — white squircle */}
-                <div className={`w-9 h-9 sm:w-11 sm:h-11 shrink-0 bg-white rounded-[14px] sm:rounded-[18px] border border-gray-200 shadow-md flex items-center justify-center transition-all group-hover:shadow-lg ${
-                  locStatus === "loading" || locationResolving ? "animate-pulse opacity-70" : ""
-                } ${showPicker ? "ring-2 ring-white/60" : ""}`}>
-                  {locStatus === "loading" || locationResolving ? (
-                    <svg className="w-5 h-5 animate-spin text-[#9333ea]" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                      <path
-                        stroke="#9333ea" strokeWidth="1.8"
-                        strokeLinecap="round" strokeLinejoin="round"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  {/* Fuller desktop treatment */}
+                  <div className="hidden md:flex items-center gap-3">
+                    <div className="flex flex-col items-end">
+                      <span className="font-caption-sm text-caption-sm text-white/70 uppercase tracking-wider">Your Location</span>
+                      <span className="font-label-md text-label-md text-white font-semibold flex items-center gap-1 group-hover:text-white/80 transition-colors">
+                        {locationLabel}
+                        <Icon name="location_on" filled className="text-[16px]" />
+                      </span>
+                    </div>
+                    <div
+                      className={`w-11 h-11 shrink-0 bg-white rounded-[18px] border border-gray-200 shadow-md flex items-center justify-center transition-all group-hover:shadow-lg ${
+                        locStatus === "loading" || locationResolving ? "animate-pulse opacity-70" : ""
+                      } ${showPicker ? "ring-2 ring-white/60" : ""}`}
+                    >
+                      <Icon
+                        name={locStatus === "loading" || locationResolving ? "progress_activity" : "my_location"}
+                        filled={!(locStatus === "loading" || locationResolving)}
+                        className={`text-[20px] text-primary ${locStatus === "loading" || locationResolving ? "animate-spin" : ""}`}
                       />
-                      <circle cx="12" cy="11" r="2.2" fill="#9333ea" />
-                    </svg>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Dropdown picker */}
+                {showPicker && (
+                  <LocationPicker
+                    detecting={locStatus === "loading" || locationResolving}
+                    onClose={() => setShowPicker(false)}
+                    onSelect={(city) => {
+                      applyLocation(city, "manual");
+                      setLocStatus("idle");
+                      setShowPicker(false);
+                    }}
+                    onDetect={async () => {
+                      const city = await getLocation();
+                      if (city) setShowPicker(false);
+                    }}
+                  />
+                )}
+              </div>
+
+              {/* User avatar — desktop only; decorative (no menu exists to open). */}
+              <div className="hidden md:flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full border-2 border-surface-gloss shadow-soft-surface overflow-hidden bg-surface-variant flex items-center justify-center">
+                  {avatarInitial ? (
+                    <span className="font-title-md text-title-md font-bold text-primary">{avatarInitial}</span>
+                  ) : (
+                    <Icon name="account_circle" filled className="text-[32px] text-outline" />
                   )}
                 </div>
-              </button>
-
-              {/* Dropdown picker */}
-              {showPicker && (
-                <LocationPicker
-                  detecting={locStatus === "loading" || locationResolving}
-                  onClose={() => setShowPicker(false)}
-                  onSelect={(city) => {
-                    applyLocation(city, "manual");
-                    setLocStatus("idle");
-                    setShowPicker(false);
-                  }}
-                  onDetect={async () => {
-                    const city = await getLocation();
-                    if (city) setShowPicker(false);
-                  }}
-                />
-              )}
+              </div>
             </div>
           </div>
         </div>
@@ -1350,9 +1489,19 @@ function extractLocationFromMessage(msg: string): string | null {
       {/* Messages — min-h-0 is required: a flex child defaults to min-height
           auto, so a tall conversation would grow the column past the viewport
           and push the input row off-screen instead of scrolling internally. */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 sm:py-4">
-        <div className={`${compact ? "" : "max-w-2xl mx-auto"} space-y-4`}>
-          {messages.map((m, i) => (
+      <div className={`flex-1 min-h-0 overflow-y-auto px-4 py-3 sm:py-4 ${compact ? "" : "md:px-12 md:py-8 md:pb-32"} relative z-10`}>
+        <div className={`${compact ? "" : "max-w-2xl md:max-w-4xl mx-auto"} space-y-4`}>
+          {messages.map((m, i) => {
+            if (isGreeting(m)) {
+              return (
+                <div key={i} className="flex justify-start">
+                  <div className="w-full">
+                    <WelcomeCard compact={compact} />
+                  </div>
+                </div>
+              );
+            }
+            return (
             <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[85%] ${m.role === "user" ? "" : "w-full"}`}>
                 {m.role === "assistant" && (
@@ -1364,7 +1513,7 @@ function extractLocationFromMessage(msg: string): string | null {
                       draggable={false}
                       className="w-5 h-5 rounded-full pointer-events-none select-none"
                     />
-                    <span className="text-xs font-medium text-doctar-700">DOCTAR AI</span>
+                    <span className="font-caption-sm text-caption-sm font-medium text-primary">DOCTAR AI</span>
                   </div>
                 )}
                 {m.imagePreview && (
@@ -1373,17 +1522,17 @@ function extractLocationFromMessage(msg: string): string | null {
                     <img
                       src={m.imagePreview}
                       alt="Medicine label"
-                      className="rounded-xl max-h-48 object-contain border border-doctar-200"
+                      className="rounded-xl max-h-48 object-contain border border-outline-variant/30"
                     />
                   </div>
                 )}
                 <div
-                  className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                  className={`rounded-2xl px-4 py-3 font-body-md text-body-md leading-relaxed ${
                     m.role === "user"
                       ? m.isFile
-                        ? "bg-doctar-100 text-doctar-800 border border-doctar-200 rounded-br-sm"
-                        : "bg-doctar-600 text-white rounded-br-sm"
-                      : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-sm"
+                        ? "bg-secondary-container/40 text-on-secondary-container border border-secondary-container rounded-br-sm"
+                        : "bg-gradient-to-br from-ai-gradient-start to-ai-gradient-end text-white rounded-br-sm shadow-btn-primary"
+                      : "bg-surface-gloss text-on-surface shadow-soft-surface border border-white/50 rounded-bl-sm"
                   }`}
                   dangerouslySetInnerHTML={{ __html: renderMarkdown(m.text) }}
                 />
@@ -1414,11 +1563,11 @@ function extractLocationFromMessage(msg: string): string | null {
                       name="city"
                       autoFocus
                       placeholder="Enter your city…"
-                      className="flex-1 border border-doctar-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-doctar-500"
+                      className="flex-1 min-w-0 skeuo-input rounded-xl px-3 py-2 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary/30"
                     />
                     <button
                       type="submit"
-                      className="shrink-0 bg-doctar-600 hover:bg-doctar-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+                      className="shrink-0 bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold px-4 py-2 rounded-xl"
                     >
                       Go
                     </button>
@@ -1434,23 +1583,24 @@ function extractLocationFromMessage(msg: string): string | null {
                   <div className="mt-3">
                     <button
                       onClick={() => send("find doctors near me")}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium bg-doctar-50 hover:bg-doctar-100 border border-doctar-200 text-doctar-700 rounded-full px-3 py-1.5 transition-colors"
+                      className="inline-flex items-center gap-1.5 font-label-md text-label-md font-medium bg-secondary-container/30 hover:bg-secondary-container/50 border border-secondary-container text-on-secondary-container rounded-full px-3 py-1.5 transition-colors"
                     >
-                      🏥 Find Doctors Near Me
+                      <Icon name="local_hospital" filled className="text-[15px]" /> Find Doctors Near Me
                     </button>
                   </div>
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
 
           {busy && !uploading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+              <div className="bg-surface-gloss border border-white/50 shadow-soft-surface rounded-2xl rounded-bl-sm px-4 py-3">
                 <div className="flex gap-1.5 items-center">
-                  <span className="w-2 h-2 bg-doctar-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                  <span className="w-2 h-2 bg-doctar-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                  <span className="w-2 h-2 bg-doctar-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:0ms]" />
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:150ms]" />
+                  <span className="w-2 h-2 bg-primary/60 rounded-full animate-bounce [animation-delay:300ms]" />
                 </div>
               </div>
             </div>
@@ -1460,149 +1610,195 @@ function extractLocationFromMessage(msg: string): string | null {
         </div>
       </div>
 
-      {/* Suggestions */}
-      {messages.length === 1 && (
-        <div className={`shrink-0 px-4 pb-2 ${compact ? "" : "max-w-2xl mx-auto w-full"}`}>
-          <div className="flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => (
-              <button
-                key={s}
-                onClick={() => send(s)}
-                className="text-xs bg-doctar-50 hover:bg-doctar-100 text-doctar-700 border border-doctar-200 rounded-full px-3 py-1.5 transition-colors"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Suggestions + input — desktop floats this whole block over the
+          message list as a gradient-fading glass overlay (matching the
+          reference); mobile keeps it docked in normal flow at the bottom,
+          which is also how the mobile reference itself is structured. */}
+      <div
+        className={
+          compact
+            ? ""
+            : "md:absolute md:bottom-0 md:left-0 md:right-0 md:p-6 md:bg-gradient-to-t md:from-background md:via-background md:to-transparent md:pointer-events-none md:z-20"
+        }
+      >
+        {/* Suggestions */}
+        {messages.length === 1 && (
+          <div className={compact ? "shrink-0 px-4 pb-2" : "shrink-0 px-4 pb-2 md:px-0 md:pb-4 md:pointer-events-auto"}>
+            {/* Desktop: centered wrapping pill row */}
+            <div className={`hidden ${compact ? "" : "md:flex"} flex-wrap gap-2 justify-center max-w-3xl mx-auto`}>
+              {SUGGESTIONS.map((s, idx) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="px-5 py-2.5 bg-surface-gloss rounded-full shadow-soft-surface border border-white/60 text-primary hover:bg-surface-container-low transition-all duration-200 font-label-md text-label-md flex items-center gap-2"
+                >
+                  {idx === 0 && <Icon name="location_on" className="text-[16px] text-tertiary" />}
+                  {idx === 1 && <Icon name="local_hospital" className="text-[16px] text-tertiary" />}
+                  {suggestionLabel(s)}
+                </button>
+              ))}
+            </div>
 
-      {/* Input — shrink-0 keeps it pinned above the fold; pb uses the safe-area
-          inset so it clears the iOS home indicator / Android gesture bar. */}
-      <div className="shrink-0 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white border-t border-gray-100">
-        {/* Compact mode: show current city + location picker trigger */}
-        {compact && (
-          <div ref={pickerRef} className="relative mb-2 flex items-center justify-between">
-            <button
-              onClick={() => setShowPicker((v) => !v)}
-              className="flex items-center gap-1.5 text-xs text-doctar-600 hover:text-doctar-800 transition-colors"
-            >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
-                <path stroke="#9333ea" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <circle cx="12" cy="11" r="2.2" fill="#9333ea" />
-              </svg>
-              <span>{locStatus === "loading" || locationResolving ? "Detecting…" : userCity ? `📍 ${userCity}` : "Set your city"}</span>
-            </button>
-            {showPicker && (
-              <div className="absolute bottom-full right-0 mb-1 z-50">
-                <LocationPicker
-                  detecting={locStatus === "loading" || locationResolving}
-                  onClose={() => setShowPicker(false)}
-                  onSelect={(city) => { applyLocation(city, "manual"); setLocStatus("idle"); setShowPicker(false); }}
-                  onDetect={async () => { const city = await getLocation(); if (city) setShowPicker(false); }}
-                />
+            {/* Mobile / compact: horizontally-scrollable chip row */}
+            <div className={compact ? "" : "md:hidden"}>
+              {!compact && <h3 className="font-label-md text-label-md text-outline mb-3 px-1">Suggested Queries</h3>}
+              <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
+                {SUGGESTIONS.map((s, idx) => (
+                  <button
+                    key={s}
+                    onClick={() => send(s)}
+                    className={`skeuo-button-secondary bg-surface-gloss font-label-md text-label-md px-4 py-2 rounded-full whitespace-nowrap active:bg-surface-dim transition-colors flex items-center gap-2 shrink-0 ${
+                      idx === 0
+                        ? "border border-primary/20 text-primary"
+                        : idx === 1
+                        ? "border border-tertiary/20 text-tertiary"
+                        : "border border-outline-variant/50 text-on-surface-variant"
+                    }`}
+                  >
+                    {idx === 0 && <Icon name="location_on" className="text-[18px]" />}
+                    {idx === 1 && <Icon name="local_hospital" className="text-[18px]" />}
+                    {suggestionLabel(s)}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         )}
-        <div className={`${compact ? "" : "max-w-2xl mx-auto"} flex gap-2 items-center`}>
-          {/* Prescription attachment button */}
-          <button
-            onClick={() => fileRef.current?.click()}
-            disabled={busy}
-            title="Upload prescription"
-            className="shrink-0 w-10 h-10 flex items-center justify-center text-doctar-600 hover:bg-doctar-50 disabled:opacity-40 rounded-xl border border-gray-200 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-            </svg>
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*,application/pdf"
-            className="hidden"
-            onChange={handleFile}
-          />
 
-          {/* Medicine label scan button */}
-          <button
-            onClick={() => cameraRef.current?.click()}
-            disabled={busy}
-            title="Scan medicine label / पैकेट की फोटो लें"
-            className="shrink-0 w-10 h-10 flex items-center justify-center text-doctar-500 hover:bg-doctar-50 disabled:opacity-40 rounded-xl border border-gray-200 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
-          <input
-            ref={cameraRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={handleMedicineImage}
-          />
-
-          <input
-            className="flex-1 min-w-0 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-doctar-500 focus:border-transparent"
-            placeholder={listening ? "🎙️ Listening… speak now" : "Ask about doctors, or attach a prescription 📎"}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && send()}
-            disabled={busy}
-          />
-
-          {/* Voice input — rendered only where the Web Speech API exists.
-              Sits on the right, between the text field and Send: dictating is
-              part of composing a message, so it belongs with the send action
-              rather than with the attach/scan inputs on the left. */}
-          {voiceSupported && (
-            <button
-              onClick={listening ? stopListening : startListening}
-              disabled={uploading}
-              title={listening ? "Stop listening" : "Speak your question"}
-              aria-label={listening ? "Stop voice input" : "Start voice input"}
-              aria-pressed={listening}
-              className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl border transition-colors ${
-                listening
-                  ? "bg-red-50 border-red-300 text-red-600 animate-pulse"
-                  : "text-doctar-500 hover:bg-doctar-50 border-gray-200"
-              } disabled:opacity-40`}
-            >
-              {listening ? (
-                <span className="relative flex items-center justify-center">
-                  <span className="absolute w-3 h-3 bg-red-500 rounded-full animate-ping opacity-75" />
-                  <span className="relative w-2.5 h-2.5 bg-red-600 rounded-full" />
-                </span>
-              ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-14 0m7 7v3m0-3a4 4 0 01-4-4V6a4 4 0 118 0v8a4 4 0 01-4 4z" />
-                </svg>
+        {/* Input — shrink-0 keeps it pinned above the fold; pb uses the safe-area
+            inset so it clears the iOS home indicator / Android gesture bar. */}
+        <div
+          className={
+            compact
+              ? "shrink-0 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-surface-gloss/90 border-t border-white/50"
+              : "shrink-0 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-surface-gloss/90 backdrop-blur-xl border-t border-white/50 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] " +
+                "md:pointer-events-auto md:max-w-4xl md:mx-auto md:w-full md:glass-panel md:rounded-3xl md:p-2 md:shadow-glass md:border-white/30 md:bg-transparent md:backdrop-blur-xl"
+          }
+        >
+          {/* Compact mode: show current city + location picker trigger */}
+          {compact && (
+            <div ref={pickerRef} className="relative mb-2 flex items-center justify-between">
+              <button
+                onClick={() => setShowPicker((v) => !v)}
+                className="flex items-center gap-1.5 font-caption-sm text-caption-sm text-primary hover:opacity-80 transition-opacity"
+              >
+                <Icon name="location_on" filled className="text-[16px]" />
+                <span>{locStatus === "loading" || locationResolving ? "Detecting…" : userCity || "Set your city"}</span>
+              </button>
+              {showPicker && (
+                <div className="absolute bottom-full right-0 mb-1 z-50">
+                  <LocationPicker
+                    detecting={locStatus === "loading" || locationResolving}
+                    onClose={() => setShowPicker(false)}
+                    onSelect={(city) => { applyLocation(city, "manual"); setLocStatus("idle"); setShowPicker(false); }}
+                    onDetect={async () => { const city = await getLocation(); if (city) setShowPicker(false); }}
+                  />
+                </div>
               )}
-            </button>
+            </div>
           )}
+          <div className={`${compact ? "" : "max-w-2xl md:max-w-none mx-auto"} flex gap-2 items-center`}>
+            {/* Prescription attachment button */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={busy}
+              title="Upload prescription"
+              className="shrink-0 w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
+            >
+              <Icon name="attach_file" className="text-[22px]" />
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*,application/pdf"
+              className="hidden"
+              onChange={handleFile}
+            />
 
-          <button
-            onClick={() => send()}
-            disabled={busy || !input.trim()}
-            className="shrink-0 bg-doctar-600 hover:bg-doctar-700 disabled:opacity-40 text-white w-10 h-10 flex items-center justify-center rounded-xl transition-colors"
-          >
-            <svg className="w-4 h-4 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-          </button>
+            {/* Medicine label scan button */}
+            <button
+              onClick={() => cameraRef.current?.click()}
+              disabled={busy}
+              title="Scan medicine label / पैकेट की फोटो लें"
+              className="shrink-0 w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
+            >
+              <Icon name="photo_camera" className="text-[22px]" />
+            </button>
+            <input
+              ref={cameraRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={handleMedicineImage}
+            />
+
+            <div className="flex-1 min-w-0 relative">
+              <input
+                className="w-full min-w-0 skeuo-input rounded-full md:rounded-full py-3.5 px-5 font-body-md text-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/30 transition-shadow"
+                placeholder={listening ? "🎙️ Listening… speak now" : compact ? "Ask about doctors or health..." : "Ask about doctors, or attach a prescription"}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && send()}
+                disabled={busy}
+              />
+            </div>
+
+            {/* Voice input — rendered only where the Web Speech API exists.
+                Sits on the right, between the text field and Send: dictating is
+                part of composing a message, so it belongs with the send action
+                rather than with the attach/scan inputs on the left. */}
+            {voiceSupported && (
+              <button
+                onClick={listening ? stopListening : startListening}
+                disabled={uploading}
+                title={listening ? "Stop listening" : "Speak your question"}
+                aria-label={listening ? "Stop voice input" : "Start voice input"}
+                aria-pressed={listening}
+                className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center skeuo-button-secondary transition-colors ${
+                  listening ? "bg-error-container text-error animate-pulse" : "bg-surface-gloss text-outline hover:text-primary"
+                } disabled:opacity-40`}
+              >
+                {listening ? (
+                  <span className="relative flex items-center justify-center">
+                    <span className="absolute w-3 h-3 bg-error rounded-full animate-ping opacity-75" />
+                    <span className="relative w-2.5 h-2.5 bg-error rounded-full" />
+                  </span>
+                ) : (
+                  <Icon name="mic" className="text-[22px]" />
+                )}
+              </button>
+            )}
+
+            <button
+              onClick={() => send()}
+              disabled={busy || !input.trim()}
+              className="shrink-0 w-12 h-12 rounded-full skeuo-button-primary bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end disabled:opacity-40 text-white flex items-center justify-center transition-transform active:scale-95 ml-1"
+            >
+              <Icon name="send" filled className="text-[20px]" />
+            </button>
+          </div>
+          {voiceError && (
+            <p className="mt-1.5 text-center font-caption-sm text-caption-sm text-error">{voiceError}</p>
+          )}
+          <p className="flex justify-center gap-4 mt-3 pt-1 pb-1 font-caption-sm text-caption-sm text-outline">
+            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => fileRef.current?.click()}>
+              <Icon name="description" className="text-[14px]" /> Prescription
+            </span>
+            <span className="text-outline-variant">•</span>
+            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => cameraRef.current?.click()}>
+              <Icon name="qr_code_scanner" className="text-[14px]" /> Scan medicine label
+            </span>
+            {voiceSupported && (
+              <>
+                <span className="text-outline-variant">•</span>
+                <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={listening ? stopListening : startListening}>
+                  <Icon name="mic" className="text-[14px]" /> Speak
+                </span>
+              </>
+            )}
+          </p>
         </div>
-        {voiceError && (
-          <p className="mt-1.5 text-center text-xs text-red-500">{voiceError}</p>
-        )}
-        <p className="mt-1.5 text-center text-xs text-gray-400">
-          📎 Prescription &nbsp;·&nbsp; <span className="text-doctar-400">📷 Scan medicine label</span>
-          {voiceSupported && <> &nbsp;·&nbsp; <span className="text-doctar-400">🎙️ Speak</span></>}
-        </p>
       </div>
       </div>
     </div>
