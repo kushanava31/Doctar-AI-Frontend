@@ -665,6 +665,10 @@ export default function ChatInterface({ compact = false }: { compact?: boolean }
   const [locStatus, setLocStatus] = useState<"idle" | "loading" | "denied">("idle");
   const [showPicker, setShowPicker] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
+  // Scan-menu popup state — declared here alongside the location picker's,
+  // above the effects that reference both.
+  const [showScanMenu, setShowScanMenu] = useState(false);
+  const scanMenuRef = useRef<HTMLDivElement>(null);
 
   // Refs mirror the state above so async callbacks (which would otherwise close
   // over a stale `userCity`/`locationSource`) always read the current value.
@@ -741,12 +745,33 @@ export default function ChatInterface({ compact = false }: { compact?: boolean }
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [showPicker, handleOutsideClick]);
 
+  // Same outside-click-to-close treatment for the scan menu. Kept as its own
+  // handler/effect rather than folded into the picker's: the two popups are
+  // anchored to different elements and can't share a single container ref.
+  const handleScanMenuOutsideClick = useCallback((e: MouseEvent) => {
+    if (scanMenuRef.current && !scanMenuRef.current.contains(e.target as Node)) {
+      setShowScanMenu(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showScanMenu) document.addEventListener("mousedown", handleScanMenuOutsideClick);
+    else document.removeEventListener("mousedown", handleScanMenuOutsideClick);
+    return () => document.removeEventListener("mousedown", handleScanMenuOutsideClick);
+  }, [showScanMenu, handleScanMenuOutsideClick]);
+
   const [messages, setMessages] = useState<Message[]>([GREETING_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const cameraRef = useRef<HTMLInputElement>(null);
+  // Two separate inputs for the label scan, not one: `capture` is all-or-nothing
+  // on a single input and there's no cross-browser way to make one input offer
+  // both paths — Android Chrome jumps straight to the camera with it and to a
+  // full picker without it, while iOS Safari differs again. So each path gets
+  // its own input and the user picks explicitly (see the scan menu below).
+  const cameraCaptureRef = useRef<HTMLInputElement>(null);
+  const gallerySelectRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // ── Chat sessions / sidebar (full page only — compact widget is untouched) ──
@@ -1715,20 +1740,72 @@ function extractLocationFromMessage(msg: string): string | null {
               onChange={handleFile}
             />
 
-            {/* Medicine label scan button */}
-            <button
-              onClick={() => cameraRef.current?.click()}
-              disabled={busy}
-              title="Scan medicine label / पैकेट की फोटो लें"
-              className="shrink-0 w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
-            >
-              <Icon name="photo_camera" className="text-[22px]" />
-            </button>
+            {/* Medicine label scan — opens a choice menu rather than firing a
+                file input directly, so the user can pick camera vs. an image
+                they already have instead of being forced into the camera. */}
+            <div ref={scanMenuRef} className="relative shrink-0">
+              <button
+                onClick={() => setShowScanMenu((v) => !v)}
+                disabled={busy}
+                title="Scan medicine label / पैकेट की फोटो लें"
+                aria-haspopup="menu"
+                aria-expanded={showScanMenu}
+                className="w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
+              >
+                <Icon name="photo_camera" className="text-[22px]" />
+              </button>
+
+              {showScanMenu && (
+                /* Opens upward — the input bar is pinned to the bottom of the
+                   viewport, so a downward menu would render off-screen. */
+                <div
+                  role="menu"
+                  className="absolute bottom-full left-0 mb-2 w-56 bg-surface-gloss rounded-2xl shadow-soft-surface border border-outline-variant/30 z-50 overflow-hidden"
+                >
+                  <div className="px-4 py-2.5 border-b border-outline-variant/20">
+                    <p className="font-caption-sm text-caption-sm font-semibold text-outline uppercase tracking-wide">
+                      Scan medicine label
+                    </p>
+                  </div>
+                  <button
+                    role="menuitem"
+                    onClick={() => {
+                      setShowScanMenu(false);
+                      cameraCaptureRef.current?.click();
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                  >
+                    <Icon name="photo_camera" filled className="text-[20px] text-primary" />
+                    Take Photo
+                  </button>
+                  <button
+                    role="menuitem"
+                    onClick={() => {
+                      setShowScanMenu(false);
+                      gallerySelectRef.current?.click();
+                    }}
+                    className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                  >
+                    <Icon name="image" filled className="text-[20px] text-tertiary" />
+                    Choose from Gallery
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* `capture` present → mobile browsers open the camera directly. */}
             <input
-              ref={cameraRef}
+              ref={cameraCaptureRef}
               type="file"
               accept="image/*"
               capture="environment"
+              className="hidden"
+              onChange={handleMedicineImage}
+            />
+            {/* No `capture` → the normal OS photo library / file picker. */}
+            <input
+              ref={gallerySelectRef}
+              type="file"
+              accept="image/*"
               className="hidden"
               onChange={handleMedicineImage}
             />
@@ -1786,7 +1863,7 @@ function extractLocationFromMessage(msg: string): string | null {
               <Icon name="description" className="text-[14px]" /> Prescription
             </span>
             <span className="text-outline-variant">•</span>
-            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => cameraRef.current?.click()}>
+            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => setShowScanMenu(true)}>
               <Icon name="qr_code_scanner" className="text-[14px]" /> Scan medicine label
             </span>
             {voiceSupported && (
