@@ -10,6 +10,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import ChatSidebar from "@/components/ChatSidebar";
 import Icon from "@/components/Icon";
+import { DOCTAR_HELPLINE } from "@/lib/constants";
 import {
   deleteSession as apiDeleteSession,
   getSession as apiGetSession,
@@ -88,14 +89,12 @@ interface Message {
   resolvedCitySource?: "gps" | "ip" | "manual" | null; // provenance of resolvedCity
 }
 
-/** Dialled when a doctor record has no direct number on file, so "Call Now"
- * is always actionable rather than degrading to a dead disabled state. */
-const CUSTOMER_CARE_PHONE = "8585858586";
-
 function DoctorCard({ d }: { d: Doctor }) {
-  // `||` (not `??`) on purpose: the field is `string | null` but empty-string
-  // rows exist in the data too, and both should fall back to customer care.
-  const dialNumber = d.phone || CUSTOMER_CARE_PHONE;
+  // Dialled when the doctor record has no direct number on file, so "Call
+  // Now" is always actionable rather than degrading to a dead disabled
+  // state. `||` (not `??`) on purpose: the field is `string | null` but
+  // empty-string rows exist in the data too, and both should fall back.
+  const dialNumber = d.phone || DOCTAR_HELPLINE;
   return (
     <div className="bg-surface-gloss border border-outline-variant/30 rounded-2xl p-4 mt-2 shadow-soft-surface">
       <div className="flex items-start justify-between gap-2">
