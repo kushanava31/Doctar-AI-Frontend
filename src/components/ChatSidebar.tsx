@@ -145,16 +145,16 @@ export default function ChatSidebar({
         </div>
 
         {/* Logo + brand */}
-        <div className="px-6 mb-8 flex flex-col gap-2">
+        <div className="px-6 md:px-5 mb-8 md:mb-5 flex flex-col gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/doctar-logo.svg"
             alt="DOCTAR AI"
             draggable={false}
-            className="h-10 w-10 rounded-xl object-contain shadow-soft-surface select-none"
+            className="h-10 w-10 md:h-8 md:w-8 rounded-xl object-contain shadow-soft-surface select-none"
           />
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-title-md font-title-md font-extrabold text-white">DOCTAR</span>
+            <span className="text-title-md md:text-[15px] font-title-md font-extrabold text-white">DOCTAR</span>
             <span className="text-caption-sm font-caption-sm text-white px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
               AI Assistant
             </span>
@@ -162,12 +162,12 @@ export default function ChatSidebar({
         </div>
 
         {/* Start New Session */}
-        <div className="px-4 mb-6">
+        <div className="px-4 md:px-3 mb-6 md:mb-4">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-primary-fixed text-primary rounded-xl py-3 px-4 font-label-md text-label-md font-semibold transition-all duration-200 shadow-md active:scale-95"
+            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-primary-fixed text-primary rounded-xl py-3 md:py-2 px-4 md:px-3 font-label-md text-label-md md:text-[13px] font-semibold transition-all duration-200 shadow-md active:scale-95"
           >
-            <Icon name="add" className="text-[20px]" />
+            <Icon name="add" className="text-[20px] md:text-[16px]" />
             New Consultation
           </button>
         </div>
@@ -176,27 +176,27 @@ export default function ChatSidebar({
           {/* "Chat" — static current-section indicator, matching the mockup's
               active tab. This app has one consultation view, so unlike the
               reference this isn't a link elsewhere. */}
-          <div className="flex items-center gap-3 text-primary rounded-xl px-4 py-3 mx-2 bg-primary-fixed shadow-md font-label-md text-label-md font-semibold">
-            <Icon name="chat_bubble" filled className="text-[20px]" />
+          <div className="flex items-center gap-3 text-primary rounded-xl px-4 md:px-3 py-3 md:py-2 mx-2 bg-primary-fixed shadow-md font-label-md text-label-md md:text-[13px] font-semibold">
+            <Icon name="chat_bubble" filled className="text-[20px] md:text-[16px]" />
             <span>Chat</span>
           </div>
 
           <button
             onClick={goToHistory}
-            className="w-full flex items-center gap-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl px-4 py-3 mx-2 transition-colors duration-200 group font-label-md text-label-md"
+            className="w-full flex items-center gap-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl px-4 md:px-3 py-3 md:py-2 mx-2 transition-colors duration-200 group font-label-md text-label-md md:text-[13px]"
           >
-            <Icon name="history" className="text-[20px]" />
+            <Icon name="history" className="text-[20px] md:text-[16px]" />
             <span>History</span>
           </button>
 
-          <div ref={recentsSectionRef} className="mt-8 mb-2 px-6 flex justify-between items-center">
+          <div ref={recentsSectionRef} className="mt-8 md:mt-5 mb-2 md:mb-1.5 px-6 md:px-4 flex justify-between items-center">
             <span className="text-caption-sm font-caption-sm text-white/50 uppercase tracking-wider">Recents</span>
             <button
               onClick={() => setRecentsExpanded((v) => !v)}
               aria-label={recentsExpanded ? "Collapse recents" : "Expand recents"}
               className="text-white/50 hover:text-white transition-colors"
             >
-              <Icon name={recentsExpanded ? "expand_less" : "expand_more"} className="text-[18px]" />
+              <Icon name={recentsExpanded ? "expand_less" : "expand_more"} className="text-[18px] md:text-[16px]" />
             </button>
           </div>
 
@@ -246,16 +246,14 @@ export default function ChatSidebar({
                       ) : (
                         <button
                           onClick={() => handleSelectSession(s.id)}
-                          className={`w-full flex flex-col px-6 py-2 mx-2 rounded-lg text-left transition-colors ${
+                          className={`w-full flex items-center gap-2 pl-4 md:pl-3 pr-8 py-2 md:py-1.5 mx-2 rounded-lg text-left transition-colors ${
                             isActive ? "bg-white/15 text-white" : "text-white/90 hover:bg-white/10"
                           }`}
                           style={{ width: "calc(100% - 1rem)" }}
                         >
-                          <div className="flex items-center gap-2">
-                            <Icon name="chat" className="text-[14px] text-white/60" />
-                            <span className="text-label-sm font-label-md truncate">{s.title}</span>
-                          </div>
-                          <span className="text-caption-sm font-caption-sm text-white/40 pl-6">{formatRelativeTime(s.updated_at)}</span>
+                          <Icon name="chat" className="text-[14px] text-white/60 shrink-0" />
+                          <span className="flex-1 min-w-0 truncate text-[13px] md:text-[12px] font-label-md">{s.title}</span>
+                          <span className="shrink-0 text-[10px] text-white/40">{formatRelativeTime(s.updated_at)}</span>
                         </button>
                       )}
 
@@ -332,20 +330,20 @@ export default function ChatSidebar({
           )}
         </nav>
 
-        <div className="mt-auto pt-4 border-t border-white/15 px-2 shrink-0 space-y-1">
+        <div className="mt-auto pt-4 md:pt-2 border-t border-white/15 px-2 shrink-0 space-y-1">
           <a
             href="#"
             onClick={(e) => e.preventDefault()}
-            className="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md"
+            className="flex items-center gap-3 px-4 md:px-3 py-3 md:py-2 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md md:text-[13px]"
           >
-            <Icon name="help" className="text-[20px]" />
+            <Icon name="help" className="text-[20px] md:text-[16px]" />
             <span>Help Center</span>
           </a>
           <button
             onClick={() => logout()}
-            className="w-full flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md"
+            className="w-full flex items-center gap-3 px-4 md:px-3 py-3 md:py-2 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md md:text-[13px]"
           >
-            <Icon name="logout" className="text-[20px]" />
+            <Icon name="logout" className="text-[20px] md:text-[16px]" />
             <span>Log Out</span>
           </button>
         </div>

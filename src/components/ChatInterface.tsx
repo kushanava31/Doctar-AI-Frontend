@@ -383,37 +383,35 @@ const WELCOME_FEATURES = [
  * scale down via `compact`/breakpoint classes instead. */
 function WelcomeCard({ compact }: { compact: boolean }) {
   return (
-    <div className={`flex w-full ${compact ? "" : "max-w-3xl mx-auto"} items-start gap-3 md:gap-4`}>
+    <div className={`flex w-full ${compact ? "" : "max-w-3xl mx-auto"} items-start gap-3 md:gap-3`}>
       <div
-        className={`${
-          compact ? "w-8 h-8" : "w-8 h-8 md:w-10 md:h-10"
-        } rounded-full bg-gradient-to-br from-ai-glow-start to-ai-glow-end flex items-center justify-center flex-shrink-0 shadow-md mt-1`}
+        className="w-8 h-8 rounded-full bg-gradient-to-br from-ai-glow-start to-ai-glow-end flex items-center justify-center flex-shrink-0 shadow-md mt-1"
       >
-        <Icon name="smart_toy" filled className={compact ? "text-white text-[16px]" : "text-white text-[18px] md:text-[20px]"} />
+        <Icon name="smart_toy" filled className="text-white text-[18px]" />
       </div>
-      <div className="flex-1 min-w-0 space-y-2">
+      <div className="flex-1 min-w-0 space-y-1.5 md:space-y-1">
         <span className="text-caption-sm font-caption-sm text-secondary font-semibold tracking-wide uppercase ai-glow-text">DOCTAR AI</span>
-        <div className={`glass-card rounded-2xl rounded-tl-sm ${compact ? "p-4" : "p-5 md:p-6"} space-y-4`}>
-          <p className="text-body-md font-body-md text-on-surface leading-relaxed">
+        <div className={`glass-card rounded-2xl rounded-tl-sm ${compact ? "p-4" : "p-4 md:p-4"} space-y-3 md:space-y-2.5`}>
+          <p className="font-body-md text-[15px] md:text-[14px] text-on-surface leading-relaxed">
             👋 Hello! I&apos;m DOCTAR AI — your health assistant.
           </p>
-          <div className="space-y-3 pt-1">
-            <p className="text-label-md font-label-md text-on-surface-variant font-medium">I can help you:</p>
-            <ul className="space-y-3">
+          <div className="space-y-2 md:space-y-1.5 pt-0.5">
+            <p className="font-label-md text-[13px] text-on-surface-variant font-medium">I can help you:</p>
+            <ul className="space-y-2 md:space-y-1.5">
               {WELCOME_FEATURES.map((f) => (
-                <li key={f.label} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Icon name={f.icon} className="text-primary text-[14px]" />
+                <li key={f.label} className="flex items-start gap-2.5 md:gap-2">
+                  <div className="w-6 h-6 md:w-5 md:h-5 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Icon name={f.icon} className="text-primary text-[14px] md:text-[12px]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="font-semibold text-on-surface text-label-md">{f.label}</span>{" "}
-                    <span className="text-on-surface-variant text-label-md">{f.detail}</span>
+                    <span className="font-semibold text-on-surface text-[13px]">{f.label}</span>{" "}
+                    <span className="text-on-surface-variant text-[13px]">{f.detail}</span>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="pt-3 border-t border-outline-variant/30">
+          <div className="pt-2 md:pt-1.5 border-t border-outline-variant/30">
             <p className="font-caption-sm text-caption-sm text-outline italic">
               Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;
             </p>
@@ -1365,9 +1363,9 @@ function extractLocationFromMessage(msg: string): string | null {
           md+ switches to the lighter `bg-primary-container` desktop status
           bar (matching the sidebar) with the fuller location readout. */}
       {!compact && (
-        <div className="shrink-0 sticky top-0 z-30 bg-primary md:bg-primary-container text-white shadow-md px-4 py-3 md:px-8 md:py-4">
+        <div className="shrink-0 sticky top-0 z-30 bg-primary md:bg-primary-container text-white shadow-md px-4 py-3 md:px-6 md:py-2.5">
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-3 md:gap-4 min-w-0">
+            <div className="flex items-center gap-3 md:gap-3 min-w-0">
               {/* Sidebar toggle — mobile only. Above md the sidebar is always
                   visible inline (see ChatSidebar's md: classes), so there's
                   nothing for this button to open there. */}
@@ -1392,18 +1390,20 @@ function extractLocationFromMessage(msg: string): string | null {
                 src="/doctar-logo.svg"
                 alt="DOCTAR"
                 draggable={false}
-                className="h-8 md:h-10 w-auto object-contain rounded-lg pointer-events-none select-none shrink-0"
+                className="h-8 md:h-7 w-auto object-contain rounded-lg pointer-events-none select-none shrink-0"
               />
               {/* Title/subtitle — desktop only; the mobile header stays a bare
-                  logo + hamburger + name, matching the mobile reference. */}
+                  logo + hamburger + name, matching the mobile reference.
+                  Sized as a normal desktop app header title, not a marketing
+                  headline — text-headline-lg (32px) read as far too tall here. */}
               <div className="hidden md:flex flex-col min-w-0">
-                <h2 className="font-headline-lg text-headline-lg font-bold text-white truncate">DOCTAR AI Assistant</h2>
-                <p className="font-body-md text-body-md text-white/80 mt-1">Find doctors · Upload prescription · Health guidance</p>
+                <h2 className="text-[15px] font-bold leading-tight text-white truncate">DOCTAR AI Assistant</h2>
+                <p className="text-[11px] leading-tight text-white/75 mt-0.5">Find doctors · Upload prescription · Health guidance</p>
               </div>
               <span className="md:hidden font-title-md text-title-md font-bold text-white truncate">DOCTAR AI</span>
             </div>
 
-            <div className="flex items-center gap-3 md:gap-6 shrink-0">
+            <div className="flex items-center gap-3 md:gap-4 shrink-0">
               {/* ── Location selector ── */}
               <div ref={pickerRef} className="relative">
                 <button
@@ -1418,23 +1418,23 @@ function extractLocationFromMessage(msg: string): string | null {
                   </span>
 
                   {/* Fuller desktop treatment */}
-                  <div className="hidden md:flex items-center gap-3">
+                  <div className="hidden md:flex items-center gap-2.5">
                     <div className="flex flex-col items-end">
-                      <span className="font-caption-sm text-caption-sm text-white/70 uppercase tracking-wider">Your Location</span>
-                      <span className="font-label-md text-label-md text-white font-semibold flex items-center gap-1 group-hover:text-white/80 transition-colors">
+                      <span className="text-[9px] leading-tight text-white/70 uppercase tracking-wider">Your Location</span>
+                      <span className="text-[12px] leading-tight text-white font-semibold flex items-center gap-1 group-hover:text-white/80 transition-colors">
                         {locationLabel}
-                        <Icon name="location_on" filled className="text-[16px]" />
+                        <Icon name="location_on" filled className="text-[13px]" />
                       </span>
                     </div>
                     <div
-                      className={`w-11 h-11 shrink-0 bg-white/20 rounded-[18px] border border-white/30 shadow-sm flex items-center justify-center transition-all group-hover:shadow-md ${
+                      className={`w-8 h-8 shrink-0 bg-white/20 rounded-xl border border-white/30 shadow-sm flex items-center justify-center transition-all group-hover:shadow-md ${
                         locStatus === "loading" || locationResolving ? "animate-pulse opacity-70" : ""
                       } ${showPicker ? "ring-2 ring-white/60" : ""}`}
                     >
                       <Icon
                         name={locStatus === "loading" || locationResolving ? "progress_activity" : "my_location"}
                         filled={!(locStatus === "loading" || locationResolving)}
-                        className={`text-[20px] text-white ${locStatus === "loading" || locationResolving ? "animate-spin" : ""}`}
+                        className={`text-[16px] text-white ${locStatus === "loading" || locationResolving ? "animate-spin" : ""}`}
                       />
                     </div>
                   </div>
@@ -1467,11 +1467,11 @@ function extractLocationFromMessage(msg: string): string | null {
                 aria-label="Account"
                 className="flex items-center gap-3 shrink-0"
               >
-                <div className="w-9 h-9 md:w-11 md:h-11 rounded-full border-2 border-white/40 shadow-soft-surface overflow-hidden bg-white/20 flex items-center justify-center">
+                <div className="w-9 h-9 md:w-8 md:h-8 rounded-full border-2 border-white/40 shadow-soft-surface overflow-hidden bg-white/20 flex items-center justify-center">
                   {avatarInitial ? (
-                    <span className="font-title-md text-title-md font-bold text-white">{avatarInitial}</span>
+                    <span className="text-[14px] font-bold text-white">{avatarInitial}</span>
                   ) : (
-                    <Icon name="account_circle" filled className="text-[26px] md:text-[30px] text-white/90" />
+                    <Icon name="account_circle" filled className="text-[26px] md:text-[18px] text-white/90" />
                   )}
                 </div>
               </button>
@@ -1521,7 +1521,7 @@ function extractLocationFromMessage(msg: string): string | null {
                   </div>
                 )}
                 <div
-                  className={`rounded-2xl px-4 py-3 font-body-md text-body-md leading-relaxed ${
+                  className={`rounded-2xl px-4 py-2.5 md:px-3.5 md:py-2 font-body-md text-[15px] md:text-[14px] leading-relaxed ${
                     m.role === "user"
                       ? m.isFile
                         ? "bg-secondary-container/40 text-on-secondary-container border border-secondary-container rounded-br-sm"
@@ -1619,15 +1619,15 @@ function extractLocationFromMessage(msg: string): string | null {
         {messages.length === 1 && (
           <div className={compact ? "shrink-0 px-4 pb-2" : "shrink-0 px-4 pb-2 md:px-0 md:pb-4 md:pointer-events-auto"}>
             {/* Desktop: centered wrapping pill row */}
-            <div className={`hidden ${compact ? "" : "md:flex"} flex-wrap gap-2 justify-center max-w-3xl mx-auto`}>
+            <div className={`hidden ${compact ? "" : "md:flex"} flex-wrap gap-1.5 justify-center max-w-3xl mx-auto`}>
               {SUGGESTIONS.map((s, idx) => (
                 <button
                   key={s}
                   onClick={() => send(s)}
-                  className="px-5 py-2.5 bg-surface-gloss rounded-full shadow-soft-surface border border-white/60 text-primary hover:bg-surface-container-low transition-all duration-200 font-label-md text-label-md flex items-center gap-2"
+                  className="px-3 py-1.5 bg-surface-gloss rounded-full shadow-soft-surface border border-white/60 text-primary hover:bg-surface-container-low transition-all duration-200 text-[13px] font-label-md flex items-center gap-1.5"
                 >
-                  {idx === 0 && <Icon name="location_on" className="text-[16px] text-tertiary" />}
-                  {idx === 1 && <Icon name="local_hospital" className="text-[16px] text-tertiary" />}
+                  {idx === 0 && <Icon name="location_on" className="text-[14px] text-tertiary" />}
+                  {idx === 1 && <Icon name="local_hospital" className="text-[14px] text-tertiary" />}
                   {suggestionLabel(s)}
                 </button>
               ))}
@@ -1669,7 +1669,7 @@ function extractLocationFromMessage(msg: string): string | null {
                 "md:pointer-events-auto md:max-w-4xl md:mx-auto md:w-full md:px-0 md:pb-0"
           }
         >
-          <div className="glass-panel rounded-2xl p-2 shadow-[0_8px_32px_rgba(94,64,145,0.08)] md:shadow-glass input-focus-ring input-transition border border-primary/20">
+          <div className="glass-panel rounded-2xl p-2 md:p-1.5 shadow-[0_8px_32px_rgba(94,64,145,0.08)] md:shadow-glass input-focus-ring input-transition border border-primary/20">
             {/* Compact mode: show current city + location picker trigger */}
             {compact && (
               <div ref={pickerRef} className="relative mb-1 px-1 pt-0.5 flex items-center justify-between">
@@ -1699,9 +1699,9 @@ function extractLocationFromMessage(msg: string): string | null {
                 disabled={busy}
                 title="Upload prescription"
                 aria-label="Upload prescription"
-                className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
+                className="shrink-0 w-11 h-11 md:w-9 md:h-9 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
               >
-                <Icon name="attach_file" className="text-[22px]" />
+                <Icon name="attach_file" className="text-[22px] md:text-[18px]" />
               </button>
               <input
                 ref={fileRef}
@@ -1721,9 +1721,9 @@ function extractLocationFromMessage(msg: string): string | null {
                   title="Scan medicine label / पैकेट की फोटो लें"
                   aria-haspopup="menu"
                   aria-expanded={showScanMenu}
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
+                  className="w-11 h-11 md:w-9 md:h-9 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
                 >
-                  <Icon name="photo_camera" className="text-[22px]" />
+                  <Icon name="photo_camera" className="text-[22px] md:text-[18px]" />
                 </button>
 
                 {showScanMenu && (
@@ -1744,9 +1744,9 @@ function extractLocationFromMessage(msg: string): string | null {
                         setShowScanMenu(false);
                         cameraCaptureRef.current?.click();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 font-label-md text-[13px] text-on-surface-variant hover:bg-surface-container-high transition-colors"
                     >
-                      <Icon name="photo_camera" filled className="text-[20px] text-primary" />
+                      <Icon name="photo_camera" filled className="text-[18px] text-primary" />
                       Take Photo
                     </button>
                     <button
@@ -1755,9 +1755,9 @@ function extractLocationFromMessage(msg: string): string | null {
                         setShowScanMenu(false);
                         gallerySelectRef.current?.click();
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 font-label-md text-[13px] text-on-surface-variant hover:bg-surface-container-high transition-colors"
                     >
-                      <Icon name="image" filled className="text-[20px] text-tertiary" />
+                      <Icon name="image" filled className="text-[18px] text-tertiary" />
                       Choose from Gallery
                     </button>
                   </div>
@@ -1788,7 +1788,7 @@ function extractLocationFromMessage(msg: string): string | null {
                 <textarea
                   ref={textareaRef}
                   rows={1}
-                  className="w-full bg-transparent border-none resize-none text-body-md font-body-md text-on-surface placeholder:text-outline-variant max-h-32 min-h-[44px] py-2.5 px-3 custom-scrollbar focus:outline-none focus:ring-0"
+                  className="w-full bg-transparent border-none resize-none font-body-md text-[15px] md:text-[14px] text-on-surface placeholder:text-outline-variant max-h-32 min-h-[44px] md:min-h-[36px] py-2.5 md:py-2 px-3 md:px-2.5 custom-scrollbar focus:outline-none focus:ring-0"
                   placeholder={listening ? "🎙️ Listening… speak now" : compact ? "Ask about doctors or health..." : "Ask about doctors, or attach a prescription..."}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -1813,7 +1813,7 @@ function extractLocationFromMessage(msg: string): string | null {
                   title={listening ? "Stop listening" : "Speak your question"}
                   aria-label={listening ? "Stop voice input" : "Start voice input"}
                   aria-pressed={listening}
-                  className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+                  className={`shrink-0 w-11 h-11 md:w-9 md:h-9 rounded-full flex items-center justify-center transition-colors ${
                     listening ? "bg-error-container text-error animate-pulse" : "text-outline hover:text-primary hover:bg-primary-fixed"
                   } disabled:opacity-40`}
                 >
@@ -1823,7 +1823,7 @@ function extractLocationFromMessage(msg: string): string | null {
                       <span className="relative w-2.5 h-2.5 bg-error rounded-full" />
                     </span>
                   ) : (
-                    <Icon name="mic" className="text-[22px]" />
+                    <Icon name="mic" className="text-[22px] md:text-[18px]" />
                   )}
                 </button>
               )}
@@ -1831,16 +1831,16 @@ function extractLocationFromMessage(msg: string): string | null {
               <button
                 onClick={() => send()}
                 disabled={busy || !input.trim()}
-                className="shrink-0 w-11 h-11 rounded-xl bg-primary hover:bg-primary-container disabled:opacity-40 text-white shadow-btn-primary flex items-center justify-center transition-all active:scale-90 ml-1"
+                className="shrink-0 w-11 h-11 md:w-9 md:h-9 rounded-xl bg-primary hover:bg-primary-container disabled:opacity-40 text-white shadow-btn-primary flex items-center justify-center transition-all active:scale-90 ml-1"
               >
-                <Icon name="send" filled className="text-[20px]" />
+                <Icon name="send" filled className="text-[20px] md:text-[16px]" />
               </button>
             </div>
             {voiceError && (
               <p className="mt-1 text-center font-caption-sm text-caption-sm text-error">{voiceError}</p>
             )}
           </div>
-          <p className="flex justify-center items-center gap-3 mt-3 pb-1 font-caption-sm text-caption-sm text-outline">
+          <p className="flex justify-center items-center gap-3 mt-3 md:mt-2 pb-1 font-caption-sm text-caption-sm text-outline">
             <span className="flex items-center gap-1">
               <Icon name="lock" className="text-[14px]" /> Private &amp; Secure
             </span>
