@@ -52,9 +52,10 @@ export default function ChatSidebar({
 }: ChatSidebarProps) {
   const { user, logout } = useAuth();
 
-  // Recents' own chevron drives its expand/collapse — the "Consultations" nav
-  // item below is now a static current-section indicator (matching the
-  // redesign reference), not a second control over the same state.
+  // Recents' own chevron drives its expand/collapse — the "History" nav item
+  // below is a shortcut that jumps straight to it (there's no separate
+  // history page in this app; recents *is* the history), not a second,
+  // independent toggle over different state.
   const [recentsExpanded, setRecentsExpanded] = useState(true);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
@@ -62,6 +63,7 @@ export default function ChatSidebar({
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const renameInputRef = useRef<HTMLInputElement>(null);
+  const recentsSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (renamingId) renameInputRef.current?.focus();
@@ -104,6 +106,10 @@ export default function ChatSidebar({
     onSelectSession(id);
     onMobileClose();
   }
+  function goToHistory() {
+    setRecentsExpanded(true);
+    recentsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <>
@@ -123,7 +129,7 @@ export default function ChatSidebar({
           regardless of mobileOpen, and md:static takes it out of the
           fixed-overlay stacking context entirely. */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-72 h-full flex flex-col bg-surface-container-lowest shadow-xl rounded-br-3xl border-r border-outline-variant/30 py-6 transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 w-72 h-full flex flex-col bg-primary-container text-white shadow-xl rounded-br-[2rem] py-6 transform transition-transform duration-200 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:static md:z-auto md:translate-x-0 md:shrink-0`}
       >
@@ -132,24 +138,26 @@ export default function ChatSidebar({
           <button
             onClick={onMobileClose}
             aria-label="Close sidebar"
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-white/80 hover:text-white hover:bg-white/10"
           >
             <Icon name="close" className="text-[20px]" />
           </button>
         </div>
 
         {/* Logo + brand */}
-        <div className="px-6 mb-8 flex items-center gap-3">
+        <div className="px-6 mb-8 flex flex-col gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/doctar-logo.svg"
             alt="DOCTAR AI"
             draggable={false}
-            className="w-10 h-10 rounded-full object-contain shadow-soft-surface select-none"
+            className="h-10 w-10 rounded-xl object-contain shadow-soft-surface select-none"
           />
-          <div>
-            <h1 className="font-title-md text-title-md font-bold text-primary">DOCTAR AI</h1>
-            <p className="font-caption-sm text-caption-sm text-on-surface-variant">Your Health Companion</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-title-md font-title-md font-extrabold text-white">DOCTAR</span>
+            <span className="text-caption-sm font-caption-sm text-white px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
+              AI Assistant
+            </span>
           </div>
         </div>
 
@@ -157,30 +165,36 @@ export default function ChatSidebar({
         <div className="px-4 mb-6">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end text-white shadow-btn-primary hover:opacity-90 transition-opacity font-label-md text-label-md font-semibold rounded-full"
+            className="w-full flex items-center justify-center gap-2 bg-white hover:bg-primary-fixed text-primary rounded-xl py-3 px-4 font-label-md text-label-md font-semibold transition-all duration-200 shadow-md active:scale-95"
           >
             <Icon name="add" className="text-[20px]" />
-            Start New Session
+            New Consultation
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 space-y-1 min-h-0">
-          <div className="px-4 py-2 mt-4 mb-2">
-            <p className="font-caption-sm text-caption-sm text-outline font-semibold uppercase tracking-wider">Navigation</p>
-          </div>
-          {/* Static current-section indicator — this app has one consultation
-              view, so unlike the reference this isn't a link elsewhere. */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-xl mx-2 my-1 font-label-md text-label-md shadow-soft-pressed">
-            <Icon name="medical_services" filled className="text-[20px]" />
-            <span>Consultations</span>
+        <nav className="flex-1 overflow-y-auto custom-scrollbar px-2 space-y-1 min-h-0">
+          {/* "Chat" — static current-section indicator, matching the mockup's
+              active tab. This app has one consultation view, so unlike the
+              reference this isn't a link elsewhere. */}
+          <div className="flex items-center gap-3 text-primary rounded-xl px-4 py-3 mx-2 bg-primary-fixed shadow-md font-label-md text-label-md font-semibold">
+            <Icon name="chat_bubble" filled className="text-[20px]" />
+            <span>Chat</span>
           </div>
 
-          <div className="px-4 py-2 mt-8 mb-2 flex justify-between items-center">
-            <p className="font-caption-sm text-caption-sm text-outline font-semibold uppercase tracking-wider">Recents</p>
+          <button
+            onClick={goToHistory}
+            className="w-full flex items-center gap-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl px-4 py-3 mx-2 transition-colors duration-200 group font-label-md text-label-md"
+          >
+            <Icon name="history" className="text-[20px]" />
+            <span>History</span>
+          </button>
+
+          <div ref={recentsSectionRef} className="mt-8 mb-2 px-6 flex justify-between items-center">
+            <span className="text-caption-sm font-caption-sm text-white/50 uppercase tracking-wider">Recents</span>
             <button
               onClick={() => setRecentsExpanded((v) => !v)}
               aria-label={recentsExpanded ? "Collapse recents" : "Expand recents"}
-              className="text-outline hover:text-on-surface transition-colors"
+              className="text-white/50 hover:text-white transition-colors"
             >
               <Icon name={recentsExpanded ? "expand_less" : "expand_more"} className="text-[18px]" />
             </button>
@@ -190,25 +204,25 @@ export default function ChatSidebar({
             <div className="space-y-0.5">
               {!user ? (
                 <div className="text-center py-8 px-2">
-                  <p className="font-caption-sm text-caption-sm text-on-surface-variant mb-2">Sign in to save your chat history.</p>
+                  <p className="font-caption-sm text-caption-sm text-white/60 mb-2">Sign in to save your chat history.</p>
                   <Link
                     href="/login"
-                    className="inline-block font-caption-sm text-caption-sm font-semibold text-primary hover:underline"
+                    className="inline-block font-caption-sm text-caption-sm font-semibold text-white hover:underline"
                   >
                     Sign in →
                   </Link>
                 </div>
               ) : loading ? (
-                <p className="font-caption-sm text-caption-sm text-outline text-center py-6">Loading…</p>
+                <p className="font-caption-sm text-caption-sm text-white/50 text-center py-6">Loading…</p>
               ) : error ? (
                 <div className="text-center py-6 px-2">
-                  <p className="font-caption-sm text-caption-sm text-error mb-2">{error}</p>
-                  <button onClick={onRetry} className="font-caption-sm text-caption-sm font-semibold text-primary hover:underline">
+                  <p className="font-caption-sm text-caption-sm text-error-container mb-2">{error}</p>
+                  <button onClick={onRetry} className="font-caption-sm text-caption-sm font-semibold text-white hover:underline">
                     Retry
                   </button>
                 </div>
               ) : sessions.length === 0 ? (
-                <p className="font-caption-sm text-caption-sm text-outline text-center py-6">No conversations yet.</p>
+                <p className="font-caption-sm text-caption-sm text-white/50 text-center py-6">No conversations yet.</p>
               ) : (
                 sessions.map((s) => {
                   const isActive = s.id === currentSessionId;
@@ -226,17 +240,22 @@ export default function ChatSidebar({
                             if (e.key === "Enter") submitRename();
                             if (e.key === "Escape") setRenamingId(null);
                           }}
-                          className="w-full px-2.5 py-2 font-label-md text-label-md rounded-xl border border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/30"
+                          className="w-full px-4 py-2 mx-2 font-label-md text-label-md rounded-xl border border-white/40 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-white/40"
+                          style={{ width: "calc(100% - 1rem)" }}
                         />
                       ) : (
                         <button
                           onClick={() => handleSelectSession(s.id)}
-                          className={`w-full flex flex-col px-4 py-2 rounded-xl mx-2 text-left transition-colors ${
-                            isActive ? "bg-secondary-container/40 text-on-surface" : "text-on-surface-variant hover:bg-surface-container-high"
+                          className={`w-full flex flex-col px-6 py-2 mx-2 rounded-lg text-left transition-colors ${
+                            isActive ? "bg-white/15 text-white" : "text-white/90 hover:bg-white/10"
                           }`}
+                          style={{ width: "calc(100% - 1rem)" }}
                         >
-                          <span className="font-label-md text-label-md truncate">{s.title}</span>
-                          <span className="font-caption-sm text-caption-sm text-outline">{formatRelativeTime(s.updated_at)}</span>
+                          <div className="flex items-center gap-2">
+                            <Icon name="chat" className="text-[14px] text-white/60" />
+                            <span className="text-label-sm font-label-md truncate">{s.title}</span>
+                          </div>
+                          <span className="text-caption-sm font-caption-sm text-white/40 pl-6">{formatRelativeTime(s.updated_at)}</span>
                         </button>
                       )}
 
@@ -248,7 +267,7 @@ export default function ChatSidebar({
                               setOpenMenuId(openMenuId === s.id ? null : s.id);
                               setConfirmDeleteId(null);
                             }}
-                            className={`w-6 h-6 flex items-center justify-center rounded-md text-outline hover:text-on-surface hover:bg-surface-container-high transition-opacity ${
+                            className={`w-6 h-6 flex items-center justify-center rounded-md text-white/60 hover:text-white hover:bg-white/15 transition-opacity ${
                               openMenuId === s.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                             }`}
                             aria-label="Session options"
@@ -313,18 +332,18 @@ export default function ChatSidebar({
           )}
         </nav>
 
-        <div className="px-2 mt-auto pt-4 border-t border-outline-variant/20 shrink-0">
+        <div className="mt-auto pt-4 border-t border-white/15 px-2 shrink-0 space-y-1">
           <a
             href="#"
             onClick={(e) => e.preventDefault()}
-            className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-2 my-1 transition-colors font-label-md text-label-md"
+            className="flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md"
           >
             <Icon name="help" className="text-[20px]" />
             <span>Help Center</span>
           </a>
           <button
             onClick={() => logout()}
-            className="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl mx-2 my-1 transition-colors font-label-md text-label-md"
+            className="w-full flex items-center gap-3 px-4 py-3 text-white/70 hover:bg-white/10 hover:text-white rounded-xl mx-2 transition-colors font-label-md text-label-md"
           >
             <Icon name="logout" className="text-[20px]" />
             <span>Log Out</span>

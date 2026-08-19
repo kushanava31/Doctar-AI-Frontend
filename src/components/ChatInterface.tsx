@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 import {
   pdfDownloadUrl,
   processPrescription,
@@ -370,111 +371,56 @@ function MedicineLabelCard({ label }: { label: MedicineLabel }) {
 }
 
 const WELCOME_FEATURES = [
-  { icon: "search", label: "Find doctors", detail: "by speciality, city, or budget", bubble: "bg-blue-100 text-primary-container" },
-  { icon: "description", label: "Upload a prescription", detail: "to get your medicine schedule", bubble: "bg-purple-100 text-tertiary-container" },
-  { icon: "center_focus_strong", label: "Scan a medicine label", detail: "to identify any medicine", bubble: "bg-green-100 text-emerald-700" },
+  { icon: "search", label: "Find doctors", detail: "by speciality, city, or budget" },
+  { icon: "prescriptions", label: "Upload a prescription", detail: "— tap the attach button to get your medicine schedule" },
+  { icon: "document_scanner", label: "Scan a medicine label", detail: "— tap the camera button to identify any medicine" },
+  { icon: "help", label: "Answer questions", detail: "about DOCTAR services" },
 ] as const;
 
 /** The very first assistant message — a richly-structured intro card in both
- * mockups, distinct from every later message's plain markdown bubble. */
+ * mockups, distinct from every later message's plain markdown bubble. One
+ * responsive structure (not separate compact/desktop/mobile trees) — sizes
+ * scale down via `compact`/breakpoint classes instead. */
 function WelcomeCard({ compact }: { compact: boolean }) {
-  if (compact) {
-    return (
-      <div className="bg-surface-gloss rounded-2xl p-5 shadow-soft-surface border border-white/50">
-        <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-ai-gradient-start to-ai-gradient-end flex-shrink-0 flex items-center justify-center shadow-md">
-            <Icon name="smart_toy" filled className="text-white text-[18px]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-label-md text-label-md text-on-surface font-semibold">Hello! I&apos;m DOCTAR AI — your health assistant.</p>
-            <div className="flex flex-col gap-2 mt-3">
+  return (
+    <div className={`flex w-full ${compact ? "" : "max-w-3xl mx-auto"} items-start gap-3 md:gap-4`}>
+      <div
+        className={`${
+          compact ? "w-8 h-8" : "w-8 h-8 md:w-10 md:h-10"
+        } rounded-full bg-gradient-to-br from-ai-glow-start to-ai-glow-end flex items-center justify-center flex-shrink-0 shadow-md mt-1`}
+      >
+        <Icon name="smart_toy" filled className={compact ? "text-white text-[16px]" : "text-white text-[18px] md:text-[20px]"} />
+      </div>
+      <div className="flex-1 min-w-0 space-y-2">
+        <span className="text-caption-sm font-caption-sm text-secondary font-semibold tracking-wide uppercase ai-glow-text">DOCTAR AI</span>
+        <div className={`glass-card rounded-2xl rounded-tl-sm ${compact ? "p-4" : "p-5 md:p-6"} space-y-4`}>
+          <p className="text-body-md font-body-md text-on-surface leading-relaxed">
+            👋 Hello! I&apos;m DOCTAR AI — your health assistant.
+          </p>
+          <div className="space-y-3 pt-1">
+            <p className="text-label-md font-label-md text-on-surface-variant font-medium">I can help you:</p>
+            <ul className="space-y-3">
               {WELCOME_FEATURES.map((f) => (
-                <div key={f.label} className="bg-surface-container-low rounded-xl p-2.5 border border-outline-variant/20 flex items-center gap-2.5">
-                  <div className={`w-7 h-7 rounded-full ${f.bubble} flex items-center justify-center shrink-0`}>
-                    <Icon name={f.icon} className="text-[14px]" />
+                <li key={f.label} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Icon name={f.icon} className="text-primary text-[14px]" />
                   </div>
                   <div className="min-w-0">
-                    <span className="font-caption-sm text-caption-sm font-semibold text-on-surface block">{f.label}</span>
-                    <span className="text-[10px] text-outline block truncate">{f.detail}</span>
+                    <span className="font-semibold text-on-surface text-label-md">{f.label}</span>{" "}
+                    <span className="text-on-surface-variant text-label-md">{f.detail}</span>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-3 p-2.5 rounded-lg bg-surface-dim/50 border border-outline-variant/20">
-              <p className="font-caption-sm text-caption-sm text-on-surface-variant italic">Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {/* Desktop treatment */}
-      <div className="hidden md:block bg-surface-gloss rounded-3xl p-8 shadow-soft-surface border border-white/50 transform transition-all duration-500 hover:shadow-lg">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-ai-gradient-start to-ai-gradient-end flex-shrink-0 flex items-center justify-center shadow-md">
-            <Icon name="smart_toy" filled className="text-white text-[20px]" />
-          </div>
-          <div className="flex-1 space-y-6">
-            <p className="font-body-lg text-body-lg text-on-surface font-medium">Hello! I&apos;m DOCTAR AI — your health assistant.</p>
-            <div className="space-y-4">
-              <p className="font-body-md text-body-md text-on-surface-variant">I can help you:</p>
-              <ul className="space-y-4 font-body-md text-body-md text-on-surface">
-                {WELCOME_FEATURES.map((f) => (
-                  <li key={f.label} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary-container/50 flex items-center justify-center flex-shrink-0 text-primary">
-                      <Icon name={f.icon} className="text-[16px]" />
-                    </div>
-                    <div><strong className="font-semibold text-primary">{f.label}</strong> {f.detail}</div>
-                  </li>
-                ))}
-                <li className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-secondary-container/50 flex items-center justify-center flex-shrink-0 text-primary">
-                    <Icon name="medication" className="text-[16px]" />
-                  </div>
-                  <div><strong className="font-semibold text-primary">Answer questions</strong> about DOCTAR services</div>
                 </li>
-              </ul>
-            </div>
-            <div className="bg-surface-container-low p-4 rounded-xl border border-outline-variant/30 italic text-on-surface-variant font-body-md">
+              ))}
+            </ul>
+          </div>
+          <div className="pt-3 border-t border-outline-variant/30">
+            <p className="font-caption-sm text-caption-sm text-outline italic">
               Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;
-            </div>
+            </p>
           </div>
         </div>
       </div>
-
-      {/* Mobile treatment */}
-      <div className="md:hidden">
-        <div className="flex items-center justify-center pt-2 pb-4">
-          <div className="w-16 h-16 rounded-full skeuo-surface flex items-center justify-center relative overflow-hidden border-2 border-white">
-            <div className="absolute inset-0 bg-gradient-to-br from-ai-gradient-start/20 to-ai-gradient-end/20" />
-            <Icon name="smart_toy" filled className="text-primary text-[32px] relative z-10" />
-          </div>
-        </div>
-        <div className="skeuo-surface rounded-2xl p-6 border border-white/60">
-          <h2 className="font-title-md text-title-md text-on-surface mb-2">Hello! I&apos;m DOCTAR AI — your health assistant.</h2>
-          <p className="font-body-md text-body-md text-on-surface-variant mb-5">I can help you with your daily wellness needs:</p>
-          <div className="flex flex-col gap-3">
-            {WELCOME_FEATURES.map((f) => (
-              <div key={f.label} className="bg-surface-container-low rounded-xl p-3 shadow-sm border border-outline-variant/20 flex items-center gap-4">
-                <div className={`w-10 h-10 rounded-full ${f.bubble} flex items-center justify-center shrink-0`}>
-                  <Icon name={f.icon} className="text-[18px]" />
-                </div>
-                <div>
-                  <span className="font-label-md text-label-md font-semibold text-on-surface block">{f.label}</span>
-                  <span className="font-caption-sm text-caption-sm text-outline block">{f.detail}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-5 p-3 rounded-lg bg-surface-dim/50 border border-outline-variant/20">
-            <p className="font-caption-sm text-caption-sm text-on-surface-variant italic">Try asking: &quot;Find a cardiologist in Delhi under ₹1000&quot;</p>
-          </div>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -770,9 +716,21 @@ export default function ChatInterface({ compact = false }: { compact?: boolean }
   const cameraCaptureRef = useRef<HTMLInputElement>(null);
   const gallerySelectRef = useRef<HTMLInputElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-grow the composer textarea with content, capped at ~128px (then it
+  // scrolls internally) — mirrors the mockup's inline oninput resize handler,
+  // but driven by React state instead of direct DOM event wiring so it stays
+  // correct through voice-input dictation and programmatic clears too.
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
+  }, [input]);
 
   // ── Chat sessions / sidebar (full page only — compact widget is untouched) ──
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
@@ -780,6 +738,9 @@ export default function ChatInterface({ compact = false }: { compact?: boolean }
   // Mobile-only drawer state — irrelevant above the md breakpoint, where
   // ChatSidebar is always visible inline regardless of this value.
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Account panel — reachable from the header avatar (every breakpoint) and
+  // the mobile bottom nav's Profile tab.
+  const [showProfilePanel, setShowProfilePanel] = useState(false);
   const sessionIdRef = useRef<string | null>(null);
   sessionIdRef.current = sessionId;
 
@@ -1399,9 +1360,12 @@ function extractLocationFromMessage(msg: string): string | null {
       )}
       <div className={`flex-1 min-w-0 flex flex-col relative ${compact ? "" : "ai-pulse-bg"}`}>
       {/* Header — shrink-0 so it keeps its size and the message list absorbs
-          the flex slack, rather than the header stretching on tall screens. */}
+          the flex slack, rather than the header stretching on tall screens.
+          Mobile gets the darker `bg-primary` top app bar from the mockup;
+          md+ switches to the lighter `bg-primary-container` desktop status
+          bar (matching the sidebar) with the fuller location readout. */}
       {!compact && (
-        <div className="shrink-0 sticky top-0 z-30 bg-tertiary text-white shadow-md border-b border-white/10 px-4 py-3 md:px-8 md:py-6">
+        <div className="shrink-0 sticky top-0 z-30 bg-primary md:bg-primary-container text-white shadow-md px-4 py-3 md:px-8 md:py-4">
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-3 md:gap-4 min-w-0">
               {/* Sidebar toggle — mobile only. Above md the sidebar is always
@@ -1410,7 +1374,7 @@ function extractLocationFromMessage(msg: string): string | null {
               <button
                 onClick={() => setSidebarOpen(true)}
                 aria-label="Open chat history"
-                className="md:hidden shrink-0 text-white active:scale-95 transition-transform"
+                className="md:hidden shrink-0 text-white active:scale-95 transition-transform p-1 -ml-1"
               >
                 <Icon name="menu" className="text-[24px]" />
               </button>
@@ -1428,14 +1392,15 @@ function extractLocationFromMessage(msg: string): string | null {
                 src="/doctar-logo.svg"
                 alt="DOCTAR"
                 draggable={false}
-                className="h-8 md:h-12 w-auto object-contain rounded-lg pointer-events-none select-none shrink-0"
+                className="h-8 md:h-10 w-auto object-contain rounded-lg pointer-events-none select-none shrink-0"
               />
               {/* Title/subtitle — desktop only; the mobile header stays a bare
-                  logo + hamburger, matching the mobile reference. */}
+                  logo + hamburger + name, matching the mobile reference. */}
               <div className="hidden md:flex flex-col min-w-0">
                 <h2 className="font-headline-lg text-headline-lg font-bold text-white truncate">DOCTAR AI Assistant</h2>
                 <p className="font-body-md text-body-md text-white/80 mt-1">Find doctors · Upload prescription · Health guidance</p>
               </div>
+              <span className="md:hidden font-title-md text-title-md font-bold text-white truncate">DOCTAR AI</span>
             </div>
 
             <div className="flex items-center gap-3 md:gap-6 shrink-0">
@@ -1448,7 +1413,7 @@ function extractLocationFromMessage(msg: string): string | null {
                 >
                   {/* Compact mobile pill */}
                   <span className="md:hidden flex items-center gap-1">
-                    <Icon name="location_on" filled className="text-[20px]" />
+                    <Icon name="location_on" filled className="text-[18px]" />
                     <span className="font-label-md text-label-md">{userCity || "Location"}</span>
                   </span>
 
@@ -1462,14 +1427,14 @@ function extractLocationFromMessage(msg: string): string | null {
                       </span>
                     </div>
                     <div
-                      className={`w-11 h-11 shrink-0 bg-white rounded-[18px] border border-gray-200 shadow-md flex items-center justify-center transition-all group-hover:shadow-lg ${
+                      className={`w-11 h-11 shrink-0 bg-white/20 rounded-[18px] border border-white/30 shadow-sm flex items-center justify-center transition-all group-hover:shadow-md ${
                         locStatus === "loading" || locationResolving ? "animate-pulse opacity-70" : ""
                       } ${showPicker ? "ring-2 ring-white/60" : ""}`}
                     >
                       <Icon
                         name={locStatus === "loading" || locationResolving ? "progress_activity" : "my_location"}
                         filled={!(locStatus === "loading" || locationResolving)}
-                        className={`text-[20px] text-primary ${locStatus === "loading" || locationResolving ? "animate-spin" : ""}`}
+                        className={`text-[20px] text-white ${locStatus === "loading" || locationResolving ? "animate-spin" : ""}`}
                       />
                     </div>
                   </div>
@@ -1493,16 +1458,23 @@ function extractLocationFromMessage(msg: string): string | null {
                 )}
               </div>
 
-              {/* User avatar — desktop only; decorative (no menu exists to open). */}
-              <div className="hidden md:flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full border-2 border-surface-gloss shadow-soft-surface overflow-hidden bg-surface-variant flex items-center justify-center">
+              {/* User avatar / account trigger — opens the profile panel.
+                  Visible at every breakpoint now (it used to be desktop-only
+                  and purely decorative); on mobile the same role is also
+                  reachable via the bottom nav's Profile tab. */}
+              <button
+                onClick={() => setShowProfilePanel(true)}
+                aria-label="Account"
+                className="flex items-center gap-3 shrink-0"
+              >
+                <div className="w-9 h-9 md:w-11 md:h-11 rounded-full border-2 border-white/40 shadow-soft-surface overflow-hidden bg-white/20 flex items-center justify-center">
                   {avatarInitial ? (
-                    <span className="font-title-md text-title-md font-bold text-primary">{avatarInitial}</span>
+                    <span className="font-title-md text-title-md font-bold text-white">{avatarInitial}</span>
                   ) : (
-                    <Icon name="account_circle" filled className="text-[32px] text-outline" />
+                    <Icon name="account_circle" filled className="text-[26px] md:text-[30px] text-white/90" />
                   )}
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -1692,189 +1664,312 @@ function extractLocationFromMessage(msg: string): string | null {
         <div
           className={
             compact
-              ? "shrink-0 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-surface-gloss/90 border-t border-white/50"
-              : "shrink-0 px-4 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-surface-gloss/90 backdrop-blur-xl border-t border-white/50 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] " +
-                "md:pointer-events-auto md:max-w-4xl md:mx-auto md:w-full md:glass-panel md:rounded-3xl md:p-2 md:shadow-glass md:border-white/30 md:bg-transparent md:backdrop-blur-xl"
+              ? "shrink-0 px-3 pt-1 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+              : "shrink-0 px-4 pt-1 pb-[max(0.75rem,env(safe-area-inset-bottom))] " +
+                "md:pointer-events-auto md:max-w-4xl md:mx-auto md:w-full md:px-0 md:pb-0"
           }
         >
-          {/* Compact mode: show current city + location picker trigger */}
-          {compact && (
-            <div ref={pickerRef} className="relative mb-2 flex items-center justify-between">
-              <button
-                onClick={() => setShowPicker((v) => !v)}
-                className="flex items-center gap-1.5 font-caption-sm text-caption-sm text-primary hover:opacity-80 transition-opacity"
-              >
-                <Icon name="location_on" filled className="text-[16px]" />
-                <span>{locStatus === "loading" || locationResolving ? "Detecting…" : userCity || "Set your city"}</span>
-              </button>
-              {showPicker && (
-                <div className="absolute bottom-full right-0 mb-1 z-50">
-                  <LocationPicker
-                    detecting={locStatus === "loading" || locationResolving}
-                    onClose={() => setShowPicker(false)}
-                    onSelect={(city) => { applyLocation(city, "manual"); setLocStatus("idle"); setShowPicker(false); }}
-                    onDetect={async () => { const city = await getLocation(); if (city) setShowPicker(false); }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
-          <div className={`${compact ? "" : "max-w-2xl md:max-w-none mx-auto"} flex gap-2 items-center`}>
-            {/* Prescription attachment button */}
-            <button
-              onClick={() => fileRef.current?.click()}
-              disabled={busy}
-              title="Upload prescription"
-              className="shrink-0 w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
-            >
-              <Icon name="attach_file" className="text-[22px]" />
-            </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*,application/pdf"
-              className="hidden"
-              onChange={handleFile}
-            />
-
-            {/* Medicine label scan — opens a choice menu rather than firing a
-                file input directly, so the user can pick camera vs. an image
-                they already have instead of being forced into the camera. */}
-            <div ref={scanMenuRef} className="relative shrink-0">
-              <button
-                onClick={() => setShowScanMenu((v) => !v)}
-                disabled={busy}
-                title="Scan medicine label / पैकेट की फोटो लें"
-                aria-haspopup="menu"
-                aria-expanded={showScanMenu}
-                className="w-12 h-12 rounded-full skeuo-button-secondary bg-surface-gloss flex items-center justify-center text-outline hover:text-primary disabled:opacity-40 transition-colors"
-              >
-                <Icon name="photo_camera" className="text-[22px]" />
-              </button>
-
-              {showScanMenu && (
-                /* Opens upward — the input bar is pinned to the bottom of the
-                   viewport, so a downward menu would render off-screen. */
-                <div
-                  role="menu"
-                  className="absolute bottom-full left-0 mb-2 w-56 bg-surface-gloss rounded-2xl shadow-soft-surface border border-outline-variant/30 z-50 overflow-hidden"
+          <div className="glass-panel rounded-2xl p-2 shadow-[0_8px_32px_rgba(94,64,145,0.08)] md:shadow-glass input-focus-ring input-transition border border-primary/20">
+            {/* Compact mode: show current city + location picker trigger */}
+            {compact && (
+              <div ref={pickerRef} className="relative mb-1 px-1 pt-0.5 flex items-center justify-between">
+                <button
+                  onClick={() => setShowPicker((v) => !v)}
+                  className="flex items-center gap-1.5 font-caption-sm text-caption-sm text-primary hover:opacity-80 transition-opacity"
                 >
-                  <div className="px-4 py-2.5 border-b border-outline-variant/20">
-                    <p className="font-caption-sm text-caption-sm font-semibold text-outline uppercase tracking-wide">
-                      Scan medicine label
-                    </p>
+                  <Icon name="location_on" filled className="text-[16px]" />
+                  <span>{locStatus === "loading" || locationResolving ? "Detecting…" : userCity || "Set your city"}</span>
+                </button>
+                {showPicker && (
+                  <div className="absolute bottom-full right-0 mb-1 z-50">
+                    <LocationPicker
+                      detecting={locStatus === "loading" || locationResolving}
+                      onClose={() => setShowPicker(false)}
+                      onSelect={(city) => { applyLocation(city, "manual"); setLocStatus("idle"); setShowPicker(false); }}
+                      onDetect={async () => { const city = await getLocation(); if (city) setShowPicker(false); }}
+                    />
                   </div>
-                  <button
-                    role="menuitem"
-                    onClick={() => {
-                      setShowScanMenu(false);
-                      cameraCaptureRef.current?.click();
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
-                  >
-                    <Icon name="photo_camera" filled className="text-[20px] text-primary" />
-                    Take Photo
-                  </button>
-                  <button
-                    role="menuitem"
-                    onClick={() => {
-                      setShowScanMenu(false);
-                      gallerySelectRef.current?.click();
-                    }}
-                    className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
-                  >
-                    <Icon name="image" filled className="text-[20px] text-tertiary" />
-                    Choose from Gallery
-                  </button>
-                </div>
-              )}
-            </div>
-            {/* `capture` present → mobile browsers open the camera directly. */}
-            <input
-              ref={cameraCaptureRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              className="hidden"
-              onChange={handleMedicineImage}
-            />
-            {/* No `capture` → the normal OS photo library / file picker. */}
-            <input
-              ref={gallerySelectRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleMedicineImage}
-            />
-
-            <div className="flex-1 min-w-0 relative">
-              <input
-                className="w-full min-w-0 skeuo-input rounded-full md:rounded-full py-3.5 px-5 font-body-md text-body-md text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/30 transition-shadow"
-                placeholder={listening ? "🎙️ Listening… speak now" : compact ? "Ask about doctors or health..." : "Ask about doctors, or attach a prescription"}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && send()}
-                disabled={busy}
-              />
-            </div>
-
-            {/* Voice input — rendered only where the Web Speech API exists.
-                Sits on the right, between the text field and Send: dictating is
-                part of composing a message, so it belongs with the send action
-                rather than with the attach/scan inputs on the left. */}
-            {voiceSupported && (
-              <button
-                onClick={listening ? stopListening : startListening}
-                disabled={uploading}
-                title={listening ? "Stop listening" : "Speak your question"}
-                aria-label={listening ? "Stop voice input" : "Start voice input"}
-                aria-pressed={listening}
-                className={`shrink-0 w-12 h-12 rounded-full flex items-center justify-center skeuo-button-secondary transition-colors ${
-                  listening ? "bg-error-container text-error animate-pulse" : "bg-surface-gloss text-outline hover:text-primary"
-                } disabled:opacity-40`}
-              >
-                {listening ? (
-                  <span className="relative flex items-center justify-center">
-                    <span className="absolute w-3 h-3 bg-error rounded-full animate-ping opacity-75" />
-                    <span className="relative w-2.5 h-2.5 bg-error rounded-full" />
-                  </span>
-                ) : (
-                  <Icon name="mic" className="text-[22px]" />
                 )}
+              </div>
+            )}
+            <div className={`${compact ? "" : "max-w-2xl md:max-w-none mx-auto"} flex items-end gap-1`}>
+              {/* Prescription attachment button */}
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={busy}
+                title="Upload prescription"
+                aria-label="Upload prescription"
+                className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
+              >
+                <Icon name="attach_file" className="text-[22px]" />
               </button>
-            )}
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*,application/pdf"
+                className="hidden"
+                onChange={handleFile}
+              />
 
-            <button
-              onClick={() => send()}
-              disabled={busy || !input.trim()}
-              className="shrink-0 w-12 h-12 rounded-full skeuo-button-primary bg-gradient-to-r from-ai-gradient-start to-ai-gradient-end disabled:opacity-40 text-white flex items-center justify-center transition-transform active:scale-95 ml-1"
-            >
-              <Icon name="send" filled className="text-[20px]" />
-            </button>
-          </div>
-          {voiceError && (
-            <p className="mt-1.5 text-center font-caption-sm text-caption-sm text-error">{voiceError}</p>
-          )}
-          <p className="flex justify-center gap-4 mt-3 pt-1 pb-1 font-caption-sm text-caption-sm text-outline">
-            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => fileRef.current?.click()}>
-              <Icon name="description" className="text-[14px]" /> Prescription
-            </span>
-            <span className="text-outline-variant">•</span>
-            <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={() => setShowScanMenu(true)}>
-              <Icon name="qr_code_scanner" className="text-[14px]" /> Scan medicine label
-            </span>
-            {voiceSupported && (
-              <>
-                <span className="text-outline-variant">•</span>
-                <span className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors" onClick={listening ? stopListening : startListening}>
-                  <Icon name="mic" className="text-[14px]" /> Speak
-                </span>
-              </>
+              {/* Medicine label scan — opens a choice menu rather than firing a
+                  file input directly, so the user can pick camera vs. an image
+                  they already have instead of being forced into the camera. */}
+              <div ref={scanMenuRef} className="relative shrink-0">
+                <button
+                  onClick={() => setShowScanMenu((v) => !v)}
+                  disabled={busy}
+                  title="Scan medicine label / पैकेट की फोटो लें"
+                  aria-haspopup="menu"
+                  aria-expanded={showScanMenu}
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-outline hover:text-primary hover:bg-primary-fixed disabled:opacity-40 transition-colors"
+                >
+                  <Icon name="photo_camera" className="text-[22px]" />
+                </button>
+
+                {showScanMenu && (
+                  /* Opens upward — the input bar is pinned to the bottom of the
+                     viewport, so a downward menu would render off-screen. */
+                  <div
+                    role="menu"
+                    className="absolute bottom-full left-0 mb-2 w-56 bg-surface-gloss rounded-2xl shadow-soft-surface border border-outline-variant/30 z-50 overflow-hidden"
+                  >
+                    <div className="px-4 py-2.5 border-b border-outline-variant/20">
+                      <p className="font-caption-sm text-caption-sm font-semibold text-outline uppercase tracking-wide">
+                        Scan medicine label
+                      </p>
+                    </div>
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        setShowScanMenu(false);
+                        cameraCaptureRef.current?.click();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                    >
+                      <Icon name="photo_camera" filled className="text-[20px] text-primary" />
+                      Take Photo
+                    </button>
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        setShowScanMenu(false);
+                        gallerySelectRef.current?.click();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                    >
+                      <Icon name="image" filled className="text-[20px] text-tertiary" />
+                      Choose from Gallery
+                    </button>
+                  </div>
+                )}
+              </div>
+              {/* `capture` present → mobile browsers open the camera directly. */}
+              <input
+                ref={cameraCaptureRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={handleMedicineImage}
+              />
+              {/* No `capture` → the normal OS photo library / file picker. */}
+              <input
+                ref={gallerySelectRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleMedicineImage}
+              />
+
+              <div className="flex-1 min-w-0 relative pb-0.5">
+                {/* Auto-growing textarea — height driven by the effect above
+                    (keyed on `input`), not an inline event handler; capped at
+                    128px then scrolls internally (custom-scrollbar). */}
+                <textarea
+                  ref={textareaRef}
+                  rows={1}
+                  className="w-full bg-transparent border-none resize-none text-body-md font-body-md text-on-surface placeholder:text-outline-variant max-h-32 min-h-[44px] py-2.5 px-3 custom-scrollbar focus:outline-none focus:ring-0"
+                  placeholder={listening ? "🎙️ Listening… speak now" : compact ? "Ask about doctors or health..." : "Ask about doctors, or attach a prescription..."}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      send();
+                    }
+                  }}
+                  disabled={busy}
+                />
+              </div>
+
+              {/* Voice input — rendered only where the Web Speech API exists.
+                  Sits on the right, between the text field and Send: dictating is
+                  part of composing a message, so it belongs with the send action
+                  rather than with the attach/scan inputs on the left. */}
+              {voiceSupported && (
+                <button
+                  onClick={listening ? stopListening : startListening}
+                  disabled={uploading}
+                  title={listening ? "Stop listening" : "Speak your question"}
+                  aria-label={listening ? "Stop voice input" : "Start voice input"}
+                  aria-pressed={listening}
+                  className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-colors ${
+                    listening ? "bg-error-container text-error animate-pulse" : "text-outline hover:text-primary hover:bg-primary-fixed"
+                  } disabled:opacity-40`}
+                >
+                  {listening ? (
+                    <span className="relative flex items-center justify-center">
+                      <span className="absolute w-3 h-3 bg-error rounded-full animate-ping opacity-75" />
+                      <span className="relative w-2.5 h-2.5 bg-error rounded-full" />
+                    </span>
+                  ) : (
+                    <Icon name="mic" className="text-[22px]" />
+                  )}
+                </button>
+              )}
+
+              <button
+                onClick={() => send()}
+                disabled={busy || !input.trim()}
+                className="shrink-0 w-11 h-11 rounded-xl bg-primary hover:bg-primary-container disabled:opacity-40 text-white shadow-btn-primary flex items-center justify-center transition-all active:scale-90 ml-1"
+              >
+                <Icon name="send" filled className="text-[20px]" />
+              </button>
+            </div>
+            {voiceError && (
+              <p className="mt-1 text-center font-caption-sm text-caption-sm text-error">{voiceError}</p>
             )}
+          </div>
+          <p className="flex justify-center items-center gap-3 mt-3 pb-1 font-caption-sm text-caption-sm text-outline">
+            <span className="flex items-center gap-1">
+              <Icon name="lock" className="text-[14px]" /> Private &amp; Secure
+            </span>
+            <span className="w-1 h-1 rounded-full bg-outline-variant" />
+            <span>AI generated responses. Consult a real doctor for medical advice.</span>
           </p>
         </div>
       </div>
+
+      {/* Mobile bottom nav — Consult (this view), Providers (not built yet),
+          Records (opens the session-history drawer — there's no separate
+          prescription-history feature to point it at), Profile (account panel).
+          Sits in normal flex flow as the column's last child, not `fixed`, so
+          it can never overlap the message list/input above it. */}
+      {!compact && (
+        <nav className="md:hidden shrink-0 flex justify-around items-center px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] bg-white/80 backdrop-blur-xl border-t border-outline-variant/30 shadow-[0_-4px_20px_rgba(94,64,145,0.08)] z-40">
+          <button
+            onClick={() => {
+              setShowProfilePanel(false);
+              bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="flex flex-col items-center justify-center gap-0.5 text-primary font-bold active:scale-90 transition-transform duration-150 p-2 min-w-[64px]"
+          >
+            <Icon name="medical_services" filled className="text-[22px]" />
+            <span className="text-caption-sm font-caption-sm">Consult</span>
+          </button>
+          <button
+            disabled
+            aria-disabled="true"
+            title="Coming soon"
+            className="flex flex-col items-center justify-center gap-0.5 text-outline-variant p-2 min-w-[64px] cursor-not-allowed"
+          >
+            <Icon name="local_hospital" className="text-[22px]" />
+            <span className="text-caption-sm font-caption-sm">Providers</span>
+          </button>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex flex-col items-center justify-center gap-0.5 text-outline hover:text-primary active:scale-90 transition-transform duration-150 p-2 min-w-[64px]"
+          >
+            <Icon name="description" className="text-[22px]" />
+            <span className="text-caption-sm font-caption-sm">Records</span>
+          </button>
+          <button
+            onClick={() => setShowProfilePanel(true)}
+            className="flex flex-col items-center justify-center gap-0.5 text-outline hover:text-primary active:scale-90 transition-transform duration-150 p-2 min-w-[64px]"
+          >
+            <Icon name="person" className="text-[22px]" />
+            <span className="text-caption-sm font-caption-sm">Profile</span>
+          </button>
+        </nav>
+      )}
       </div>
+
+      {/* Account panel — reachable from the header avatar and the mobile
+          Profile tab. Minimal by design: identity + sign out (or sign in/up
+          when logged out) — there's no account-settings feature to build out
+          yet beyond that. */}
+      {showProfilePanel && (
+        <div
+          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40"
+          onClick={() => setShowProfilePanel(false)}
+        >
+          <div
+            className="w-full md:w-96 md:max-w-[90vw] bg-surface-gloss rounded-t-3xl md:rounded-3xl shadow-soft-surface border border-white/50 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="font-title-md text-title-md font-bold text-on-surface">Account</h3>
+              <button
+                onClick={() => setShowProfilePanel(false)}
+                aria-label="Close"
+                className="w-8 h-8 flex items-center justify-center rounded-full text-outline hover:text-on-surface hover:bg-surface-container-high"
+              >
+                <Icon name="close" className="text-[20px]" />
+              </button>
+            </div>
+
+            {user ? (
+              <>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-ai-glow-start to-ai-glow-end flex items-center justify-center shrink-0 shadow-md">
+                    {avatarInitial ? (
+                      <span className="font-title-md text-title-md font-bold text-white">{avatarInitial}</span>
+                    ) : (
+                      <Icon name="account_circle" filled className="text-white text-[28px]" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    {user.name && <p className="font-label-md text-label-md font-semibold text-on-surface truncate">{user.name}</p>}
+                    <p className="font-caption-sm text-caption-sm text-on-surface-variant truncate">{user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setShowProfilePanel(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-label-md text-label-md font-semibold text-error border border-error-container hover:bg-error-container/30 transition-colors"
+                >
+                  <Icon name="logout" className="text-[18px]" />
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="font-body-md text-body-md text-on-surface-variant mb-5">
+                  Sign in to save your chat history and pick up conversations across devices.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href="/login"
+                    onClick={() => setShowProfilePanel(false)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary hover:bg-primary-container text-white shadow-btn-primary font-label-md text-label-md font-semibold transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setShowProfilePanel(false)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-outline-variant text-primary hover:bg-primary-fixed font-label-md text-label-md font-semibold transition-colors"
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

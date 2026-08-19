@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-hanken-grotesk), system-ui, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), system-ui, sans-serif;
   @apply text-on-surface antialiased bg-background;
   min-height: 100vh;
   min-height: 100dvh;
@@ -33,6 +33,37 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(94, 64, 145, 0.04);
+}
+
+.ai-glow-text {
+  background: linear-gradient(135deg, theme("colors.ai-glow-start"), theme("colors.ai-glow-end"));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.input-focus-ring:focus-within {
+  box-shadow: 0 0 0 2px theme("colors.primary-fixed-dim");
+  border-color: theme("colors.primary");
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
 }
 
 .ai-pulse-bg {

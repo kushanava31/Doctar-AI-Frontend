@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import ChatWidgetMount from "./ChatWidgetMount";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -7,12 +7,12 @@ import MaterialIconsLoader from "@/components/MaterialIconsLoader";
 
 // Loaded via next/font/google: self-hosted and inlined at build time (no
 // runtime request to Google Fonts, no layout-shift flash of a different
-// font). Used as the single body font across every breakpoint — see the
-// note in the redesign summary about unifying the two mockups' fonts.
-const hankenGrotesk = Hanken_Grotesk({
+// font). Used as the single body font across every breakpoint, per the
+// purple/glass mockup's typography.
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-hanken-grotesk",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta-sans",
   display: "swap",
 });
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={hankenGrotesk.variable}>
+    <html lang="en" className={plusJakartaSans.variable}>
       <head>
         {/* Material Symbols Outlined — a proper self-updating <link>, not next/font:
             this is a variable icon font (FILL/wght/GRAD/opsz axes used live via
